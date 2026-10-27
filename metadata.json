@@ -1,0 +1,8 @@
+{
+  "name": "LengShow AI Youtube Video News",
+  "description": "MarcusLeng News Network MNN — 24/7 AI-powered retro pixel-art comedy news broadcast anchored by Pixel Marcus Leng in the style of  Pixel Art",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
