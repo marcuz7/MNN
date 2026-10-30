@@ -1,0 +1,1621 @@
+{
+  "feeds": [
+    {
+      "id": "feed-tc-ai",
+      "ownerUid": "system",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "title": "TechCrunch AI",
+      "category": "AI",
+      "language": "en",
+      "priority": 9,
+      "enabled": true,
+      "pollIntervalMinutes": 30,
+      "lastPolledAt": "2026-10-27T17:04:58.253Z",
+      "createdAt": "2026-10-27T17:04:58.253Z",
+      "updatedAt": "2026-10-27T17:04:58.253Z"
+    },
+    {
+      "id": "feed-vb-ai",
+      "ownerUid": "system",
+      "url": "https://venturebeat.com/category/ai/feed/",
+      "title": "VentureBeat AI",
+      "category": "AI",
+      "language": "en",
+      "priority": 8,
+      "enabled": true,
+      "pollIntervalMinutes": 30,
+      "lastPolledAt": "2026-10-27T17:04:58.253Z",
+      "createdAt": "2026-10-27T17:04:58.253Z",
+      "updatedAt": "2026-10-27T17:04:58.253Z"
+    },
+    {
+      "id": "feed-verge-tech",
+      "ownerUid": "system",
+      "url": "https://www.theverge.com/rss/index.xml",
+      "title": "The Verge Tech",
+      "category": "Technology",
+      "language": "en",
+      "priority": 8,
+      "enabled": true,
+      "pollIntervalMinutes": 30,
+      "lastPolledAt": "2026-10-27T17:04:58.253Z",
+      "createdAt": "2026-10-27T17:04:58.253Z",
+      "updatedAt": "2026-10-27T17:04:58.253Z"
+    },
+    {
+      "id": "feed-mit-ai",
+      "ownerUid": "system",
+      "url": "https://www.technologyreview.com/feed/",
+      "title": "MIT Technology Review AI",
+      "category": "Science & AI",
+      "language": "en",
+      "priority": 9,
+      "enabled": true,
+      "pollIntervalMinutes": 30,
+      "lastPolledAt": "2026-10-27T17:04:58.253Z",
+      "createdAt": "2026-10-27T17:04:58.253Z",
+      "updatedAt": "2026-10-27T17:04:58.253Z"
+    },
+    {
+      "id": "feed-hn-ai",
+      "ownerUid": "system",
+      "url": "https://news.ycombinator.com/rss",
+      "title": "Hacker News Technology",
+      "category": "Developer Tools",
+      "language": "en",
+      "priority": 7,
+      "enabled": true,
+      "pollIntervalMinutes": 30,
+      "lastPolledAt": "2026-10-27T17:04:58.253Z",
+      "createdAt": "2026-10-27T17:04:58.253Z",
+      "updatedAt": "2026-10-27T17:04:58.253Z"
+    },
+    {
+      "id": "feed-github-trending-daily",
+      "ownerUid": "system",
+      "url": "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml",
+      "title": "GitHub Trending Repos of the Day",
+      "category": "GitHub Repo of the Day",
+      "language": "en",
+      "priority": 10,
+      "enabled": true,
+      "pollIntervalMinutes": 30,
+      "lastPolledAt": "2026-10-28T10:54:56.513Z",
+      "createdAt": "2026-10-28T10:54:56.513Z",
+      "updatedAt": "2026-10-28T10:54:56.513Z"
+    },
+    {
+      "id": "feed-github-trending-python",
+      "ownerUid": "system",
+      "url": "https://mshibanami.github.io/GitHubTrendingRSS/daily/python.xml",
+      "title": "GitHub Daily Trending (Python & AI)",
+      "category": "GitHub Repo of the Day",
+      "language": "en",
+      "priority": 9,
+      "enabled": true,
+      "pollIntervalMinutes": 30,
+      "lastPolledAt": "2026-10-28T10:54:56.513Z",
+      "createdAt": "2026-10-28T10:54:56.513Z",
+      "updatedAt": "2026-10-28T10:54:56.513Z"
+    },
+    {
+      "id": "feed-bensbites-x-ai",
+      "ownerUid": "system",
+      "url": "https://bensbites.substack.com/feed",
+      "title": "Ben's Bites (Hottest X.com AI News & Drops)",
+      "category": "Hottest X.com AI News",
+      "language": "en",
+      "priority": 10,
+      "enabled": true,
+      "pollIntervalMinutes": 15,
+      "lastPolledAt": "2026-10-28T10:54:56.513Z",
+      "createdAt": "2026-10-28T10:54:56.513Z",
+      "updatedAt": "2026-10-28T10:54:56.513Z"
+    },
+    {
+      "id": "feed-lastweekin-ai",
+      "ownerUid": "system",
+      "url": "https://lastweekin.ai/feed",
+      "title": "Last Week in AI News",
+      "category": "Substack AI Thinkers",
+      "language": "en",
+      "priority": 9,
+      "enabled": true,
+      "pollIntervalMinutes": 60,
+      "lastPolledAt": "2026-10-28T10:54:56.513Z",
+      "createdAt": "2026-10-28T10:54:56.513Z",
+      "updatedAt": "2026-10-28T10:54:56.513Z"
+    },
+    {
+      "id": "feed-import-ai",
+      "ownerUid": "system",
+      "url": "https://importai.substack.com/feed",
+      "title": "Import AI (Jack Clark / Frontier Research)",
+      "category": "Substack AI Thinkers",
+      "language": "en",
+      "priority": 9,
+      "enabled": true,
+      "pollIntervalMinutes": 60,
+      "lastPolledAt": "2026-10-28T10:54:56.513Z",
+      "createdAt": "2026-10-28T10:54:56.513Z",
+      "updatedAt": "2026-10-28T10:54:56.513Z"
+    },
+    {
+      "id": "feed-interconnects-ai",
+      "ownerUid": "system",
+      "url": "https://www.interconnects.ai/feed",
+      "title": "Interconnects AI (Nathan Lambert / RLHF & Models)",
+      "category": "Substack AI Thinkers",
+      "language": "en",
+      "priority": 9,
+      "enabled": true,
+      "pollIntervalMinutes": 60,
+      "lastPolledAt": "2026-10-28T10:54:56.513Z",
+      "createdAt": "2026-10-28T10:54:56.513Z",
+      "updatedAt": "2026-10-28T10:54:56.513Z"
+    },
+    {
+      "id": "feed-algorithmic-bridge",
+      "ownerUid": "system",
+      "url": "https://thealgorithmicbridge.substack.com/feed",
+      "title": "The Algorithmic Bridge (Alberto Romero)",
+      "category": "Substack AI Thinkers",
+      "language": "en",
+      "priority": 8,
+      "enabled": true,
+      "pollIntervalMinutes": 60,
+      "lastPolledAt": "2026-10-28T10:54:56.513Z",
+      "createdAt": "2026-10-28T10:54:56.513Z",
+      "updatedAt": "2026-10-28T10:54:56.513Z"
+    }
+  ],
+  "items": [
+    {
+      "id": "item-agent-clusters",
+      "feedId": "feed-tc-ai",
+      "feedTitle": "TechCrunch AI",
+      "guid": "tc-2026-agent-os-001",
+      "canonicalUrl": "https://techcrunch.com/2026/10/26/autonomous-ai-agent-os-breakthroughs/",
+      "title": "Autonomous AI Agent Clusters Transition to Continuous Background Operation",
+      "author": "Alex Wilhelm",
+      "publishedAt": "2026-10-27T13:04:58.253Z",
+      "fetchedAt": "2026-10-27T17:04:58.253Z",
+      "contentHash": "8e512fa911aa323a999b20094ff7dce67a9bfd566a103838abae33f127b2a211",
+      "bodyText": "Major research labs announce autonomous agent architectures capable of running multi-hour self-healing workflows with deterministic memory checkpoints."
+    },
+    {
+      "id": "item-video-gen-local",
+      "feedId": "feed-vb-ai",
+      "feedTitle": "VentureBeat AI",
+      "guid": "vb-2026-video-rtx-002",
+      "canonicalUrl": "https://venturebeat.com/ai/2026/10/25/open-source-video-models-achieve-consumer-gpu-realtime/",
+      "title": "Open-Source Foundation Video Models Achieve Realtime Rendering on Consumer GPUs",
+      "author": "Sharon Goldman",
+      "publishedAt": "2026-10-27T09:04:58.254Z",
+      "fetchedAt": "2026-10-27T17:04:58.253Z",
+      "contentHash": "829162af24a011001f2d824aa6696ee0d56a086b6f841d749beb86695de8e866",
+      "bodyText": "Wan2GP and latent flow matching optimization now allow high-definition 1080p video generation locally on standard 12GB graphics hardware under 60 seconds."
+    },
+    {
+      "id": "item-synthetic-media-rules",
+      "feedId": "feed-mit-ai",
+      "feedTitle": "MIT Technology Review AI",
+      "guid": "mit-2026-provenance-003",
+      "canonicalUrl": "https://www.technologyreview.com/2026/10/24/c2pa-watermarking-standards-broadcasting/",
+      "title": "Global Standards Bodies Ratify C2PA Provenance Labels for AI Television & YouTube Channels",
+      "author": "Will Douglas Heaven",
+      "publishedAt": "2026-10-27T03:04:58.254Z",
+      "fetchedAt": "2026-10-27T17:04:58.253Z",
+      "contentHash": "5dc9877e373184942d4514bfdf25bdb6fa8ec25aa55185613ebfb35ae019944f",
+      "bodyText": "New international metadata guidelines require automated news channels and virtual pixel anchors to clearly identify synthetic presenters and source attributions."
+    },
+    {
+      "id": "item-hypit-dsl",
+      "feedId": "feed-github-trending-daily",
+      "feedTitle": "GitHub Trending Repos of the Day",
+      "guid": "gh-hypit-ai-hypit-001",
+      "canonicalUrl": "https://github.com/hypit-ai/hypit",
+      "title": "hypit-ai/hypit: AI Coding Agent Video DSL & Viral Short Generator",
+      "author": "hypit-ai",
+      "publishedAt": "2026-10-28T08:54:56.513Z",
+      "fetchedAt": "2026-10-28T10:54:56.513Z",
+      "contentHash": "1bc322a19c8ce3755d38ca33cc6ff01af352892aa8237ce858a8960a8fc13049",
+      "bodyText": "Open-source agentic video DSL and runtime framework designed for Claude Code, Codex, and AI agents to programmatically create, replicate, and render word-anchored short-form videos."
+    },
+    {
+      "id": "item-bensbites-viral-x",
+      "feedId": "feed-bensbites-x-ai",
+      "feedTitle": "Ben's Bites AI",
+      "guid": "bb-x-viral-agent-002",
+      "canonicalUrl": "https://bensbites.substack.com/p/autonomous-reasoning-agents",
+      "title": "Hottest X.com AI News: Autonomous Coding Agents Deploying Full Web Apps in 60s",
+      "author": "Ben Tossell",
+      "publishedAt": "2026-10-28T07:54:56.513Z",
+      "fetchedAt": "2026-10-28T10:54:56.513Z",
+      "contentHash": "0391186c1c79453589f38fc6702a873bda1e2e9825a85a43c388f712a3e24366",
+      "bodyText": "Viral X.com posts showcase next-generation reasoning agents spinning up full-stack applications with self-verifying browser checkpoints and automated video walkthroughs."
+    },
+    {
+      "id": "item-interconnects-rlhf",
+      "feedId": "feed-interconnects-ai",
+      "feedTitle": "Interconnects AI",
+      "guid": "ic-rlhf-dynamics-003",
+      "canonicalUrl": "https://www.interconnects.ai/p/post-training-dynamics-reasoning",
+      "title": "Interconnects AI: Post-Training Dynamics, Direct Preference Optimization & Open Weights Frontier",
+      "author": "Nathan Lambert",
+      "publishedAt": "2026-10-28T04:54:56.513Z",
+      "fetchedAt": "2026-10-28T10:54:56.513Z",
+      "contentHash": "6640eb6782536afd97a6a56962f4c16364450e130bfd2ef82798279eddb29411",
+      "bodyText": "Comprehensive technical analysis on how post-training preference optimization and synthetic reasoning tokens allow open-weights foundation models to match closed proprietary clusters."
+    },
+    {
+      "id": "item-importai-verification",
+      "feedId": "feed-import-ai",
+      "feedTitle": "Import AI",
+      "guid": "ia-412-agent-verification-004",
+      "canonicalUrl": "https://importai.substack.com/p/import-ai-412-agent-verification",
+      "title": "Import AI #412: Multi-Modal Agent Verification Protocols & Model Security Checkpoints",
+      "author": "Jack Clark",
+      "publishedAt": "2026-10-28T00:54:56.513Z",
+      "fetchedAt": "2026-10-28T10:54:56.513Z",
+      "contentHash": "27585e1856ffc184938202ac0b54552db43c909eb51fa94a93af26b5bbf6b9ae",
+      "bodyText": "Anthropic co-founder Jack Clark on establishing verifiable proof-of-work protocols for multimodal agents running unattended background computing loops."
+    },
+    {
+      "id": "item-vllm-omni",
+      "feedId": "feed-github-trending-python",
+      "feedTitle": "GitHub Daily Trending (Python & AI)",
+      "guid": "gh-vllm-omni-005",
+      "canonicalUrl": "https://github.com/vllm-project/vllm",
+      "title": "GitHub Repo of the Day: vLLM-Omni Realtime Speech & Vision Orchestration",
+      "author": "vLLM Team",
+      "publishedAt": "2026-10-28T02:54:56.513Z",
+      "fetchedAt": "2026-10-28T10:54:56.513Z",
+      "contentHash": "262b89095ff0dee342a2cebe3ead0645f5ae21296416f2aac8b90026e5e0616b",
+      "bodyText": "Ultra-low latency multimodal streaming engine supporting interleaved voice tokens, continuous frame ingestion, and parallel speculative decoding."
+    },
+    {
+      "id": "item-x-humanoid-teleop",
+      "feedId": "feed-bensbites-x-ai",
+      "feedTitle": "Ben's Bites AI",
+      "guid": "bb-x-humanoid-006",
+      "canonicalUrl": "https://bensbites.substack.com/p/humanoid-dexterity-breakthroughs",
+      "title": "Hottest X.com AI News: Teleoperated Humanoid Robots Achieve Latent World-Model Reflexes",
+      "author": "Ben Tossell",
+      "publishedAt": "2026-10-28T05:54:56.513Z",
+      "fetchedAt": "2026-10-28T10:54:56.513Z",
+      "contentHash": "b0b0146b6fcc85ef54d2561995696492e8bf14604916a8b7cf9964ac34e6f091",
+      "bodyText": "Viral videos across X.com demonstrate humanoid robots learning complex tactile object manipulation with zero-shot adaptation powered by end-to-end vision models."
+    },
+    {
+      "id": "item-whisperx-alignment",
+      "feedId": "feed-github-trending-python",
+      "feedTitle": "GitHub Daily Trending (Python & AI)",
+      "guid": "gh-whisperx-live-008",
+      "canonicalUrl": "https://github.com/m-bain/whisperX",
+      "title": "GitHub Repo of the Day: WhisperX Microsecond Word-Level Forced Audio Alignment Pipeline",
+      "author": "Max Bain",
+      "publishedAt": "2026-10-27T22:54:56.513Z",
+      "fetchedAt": "2026-10-28T10:54:56.513Z",
+      "contentHash": "8da47fe96f7f0dee55e23cfd2e0e9d7ff22eb9672e78aee2818d725d3eb3ab6f",
+      "bodyText": "Forced phonetic alignment system producing microsecond-accurate word boundaries and speaker diarization, critical for professional broadcast subtitle synchronization."
+    },
+    {
+      "id": "item-algorithmic-bridge",
+      "feedId": "feed-algorithmic-bridge",
+      "feedTitle": "The Algorithmic Bridge",
+      "guid": "ab-agentic-os-009",
+      "canonicalUrl": "https://thealgorithmicbridge.substack.com/p/the-agentic-os-revolution",
+      "title": "The Algorithmic Bridge: Frontier Lab Architecture Benchmarks & The Agentic OS Revolution",
+      "author": "Alberto Romero",
+      "publishedAt": "2026-10-27T19:54:56.513Z",
+      "fetchedAt": "2026-10-28T10:54:56.513Z",
+      "contentHash": "da166980e4a7ca8c57622df165cb1394391403417808c1ef1d1ee53f240854b2",
+      "bodyText": "In-depth essay examining how agentic operating systems are transforming enterprise developer environments and redefining human-AI interaction boundaries."
+    },
+    {
+      "id": "item-lastweekinai-summary",
+      "feedId": "feed-lastweekin-ai",
+      "feedTitle": "Last Week in AI",
+      "guid": "lwai-summary-011",
+      "canonicalUrl": "https://lastweekin.ai/p/next-gen-video-and-synthetic-flywheels",
+      "title": "Last Week in AI: Next-Generation Frontier Video Models and Synthetic Training Flywheels",
+      "author": "Andrey Kurenkov",
+      "publishedAt": "2026-10-27T16:54:56.513Z",
+      "fetchedAt": "2026-10-28T10:54:56.513Z",
+      "contentHash": "7fdb0301d421854f67b3ebc380abf831092dc110ad1e0a688d374d55e0ac2693",
+      "bodyText": "Weekly briefing summarizing foundation video model scaling laws, automated preference data generation pipelines, and synthetic alignment flywheels."
+    }
+  ],
+  "clusters": [
+    {
+      "id": "cluster-github-hypit",
+      "ownerUid": "system",
+      "leadItemId": "item-hypit-dsl",
+      "title": "hypit-ai/hypit: AI Coding Agent Video DSL & Viral Short Generator",
+      "summary": "Open-source agentic video DSL allowing AI models like Claude and Codex to replicate viral videos, perform word-anchored editing, and render short-form clips.",
+      "category": "GitHub Repo of the Day",
+      "sourceItemIds": [
+        "item-hypit-dsl"
+      ],
+      "sources": [
+        {
+          "id": "item-hypit-dsl",
+          "title": "hypit-ai/hypit: AI Coding Agent Video DSL & Viral Short Generator",
+          "url": "https://github.com/hypit-ai/hypit",
+          "publisher": "GitHub Trending Repos of the Day",
+          "publishedAt": "2026-10-28T08:54:56.513Z"
+        }
+      ],
+      "firstSeenAt": "2026-10-28T10:54:56.513Z",
+      "lastSeenAt": "2026-10-28T10:54:56.513Z",
+      "duplicateCount": 3,
+      "score": 99,
+      "status": "PRODUCED",
+      "claims": [
+        {
+          "id": "claim-hypit-1",
+          "clusterId": "cluster-github-hypit",
+          "claimText": "Hypit enables coding agents to programmatically clone and render viral short-form videos using word-anchored DSLs.",
+          "verdict": "SUPPORTED",
+          "evidenceExcerpt": "Official GitHub repo documentation verifies word-anchored timestamp synchronization with WhisperX and seamless video remix pipelines.",
+          "sourceUrl": "https://github.com/hypit-ai/hypit",
+          "sourceTitle": "GitHub: hypit-ai/hypit",
+          "confidence": 0.99,
+          "isSatirical": false
+        }
+      ]
+    },
+    {
+      "id": "cluster-x-bensbites",
+      "ownerUid": "system",
+      "leadItemId": "item-bensbites-viral-x",
+      "title": "Hottest X.com AI News: Autonomous Coding Agents Deploying Full Web Apps in 60s",
+      "summary": "Viral X.com posts showcase next-generation reasoning agents spinning up full-stack applications with self-verifying browser checkpoints and automated video walkthroughs.",
+      "category": "Hottest X.com AI News",
+      "sourceItemIds": [
+        "item-bensbites-viral-x"
+      ],
+      "sources": [
+        {
+          "id": "item-bensbites-viral-x",
+          "title": "Hottest X.com AI News: Autonomous Coding Agents Deploying Full Web Apps in 60s",
+          "url": "https://bensbites.substack.com/p/autonomous-reasoning-agents",
+          "publisher": "Ben's Bites (Hottest X.com AI News)",
+          "publishedAt": "2026-10-28T07:54:56.513Z"
+        }
+      ],
+      "firstSeenAt": "2026-10-28T10:54:56.513Z",
+      "lastSeenAt": "2026-10-28T10:54:56.513Z",
+      "duplicateCount": 4,
+      "score": 96,
+      "status": "PRODUCED",
+      "claims": [
+        {
+          "id": "claim-bensbites-1",
+          "clusterId": "cluster-x-bensbites",
+          "claimText": "Autonomous reasoning agents can autonomously resolve web compilation errors in under 60 seconds.",
+          "verdict": "SUPPORTED",
+          "evidenceExcerpt": "Viral demonstration clips and benchmark logs confirm 94.8% pass rate on zero-shot interactive app scaffolds.",
+          "sourceUrl": "https://bensbites.substack.com",
+          "sourceTitle": "Ben's Bites AI",
+          "confidence": 0.95,
+          "isSatirical": false
+        }
+      ]
+    },
+    {
+      "id": "cluster-01-agent-clusters",
+      "ownerUid": "system",
+      "leadItemId": "item-agent-clusters",
+      "title": "Autonomous AI Agent Clusters Running 24/7 Background Workflows",
+      "summary": "Modern software agents are transitioning from conversational turn-taking to continuous background services that self-heal and manage enterprise servers.",
+      "category": "AI & Agents",
+      "sourceItemIds": [
+        "item-agent-clusters"
+      ],
+      "sources": [
+        {
+          "id": "item-agent-clusters",
+          "title": "Autonomous AI Agent Clusters Transition to Continuous Background Operation",
+          "url": "https://techcrunch.com/2026/10/26/autonomous-ai-agent-os-breakthroughs/",
+          "publisher": "TechCrunch AI",
+          "publishedAt": "2026-10-27T13:04:58.254Z"
+        }
+      ],
+      "firstSeenAt": "2026-10-27T17:04:58.253Z",
+      "lastSeenAt": "2026-10-27T17:04:58.253Z",
+      "duplicateCount": 1,
+      "score": 95,
+      "status": "VERIFIED",
+      "claims": [
+        {
+          "id": "claim-01-1",
+          "clusterId": "cluster-01-agent-clusters",
+          "claimText": "Autonomous agent clusters operate continuous multi-hour workflows without crashing.",
+          "verdict": "SUPPORTED",
+          "evidenceExcerpt": "TechCrunch reports verified benchmark tests showing 99.4% task completion across sustained 6-hour execution windows.",
+          "sourceUrl": "https://techcrunch.com/2026/10/26/autonomous-ai-agent-os-breakthroughs/",
+          "sourceTitle": "TechCrunch AI",
+          "confidence": 0.96,
+          "isSatirical": false
+        }
+      ]
+    },
+    {
+      "id": "cluster-substack-interconnects",
+      "ownerUid": "system",
+      "leadItemId": "item-interconnects-rlhf",
+      "title": "Interconnects AI: Post-Training Dynamics, Direct Preference Optimization & Open Weights Frontier",
+      "summary": "Nathan Lambert's deep-dive into how modern post-training algorithms, reasoning distillation, and open-weights RLHF are closing the gap with closed frontier models.",
+      "category": "Substack AI Thinkers",
+      "sourceItemIds": [
+        "item-interconnects-rlhf"
+      ],
+      "sources": [
+        {
+          "id": "item-interconnects-rlhf",
+          "title": "Interconnects AI: Post-Training Dynamics, Direct Preference Optimization & Open Weights Frontier",
+          "url": "https://www.interconnects.ai/p/post-training-dynamics-reasoning",
+          "publisher": "Interconnects AI",
+          "publishedAt": "2026-10-28T04:54:56.513Z"
+        }
+      ],
+      "firstSeenAt": "2026-10-28T10:54:56.513Z",
+      "lastSeenAt": "2026-10-28T10:54:56.513Z",
+      "duplicateCount": 2,
+      "score": 95,
+      "status": "PRODUCED",
+      "claims": [
+        {
+          "id": "claim-interconnects-1",
+          "clusterId": "cluster-substack-interconnects",
+          "claimText": "Open weights reasoning models achieve parity with proprietary models across mathematical benchmarks through synthetic self-correction.",
+          "verdict": "SUPPORTED",
+          "evidenceExcerpt": "Interconnects empirical benchmarks demonstrate competitive performance on MATH-500 and HumanEval-X.",
+          "sourceUrl": "https://www.interconnects.ai",
+          "sourceTitle": "Interconnects AI",
+          "confidence": 0.94,
+          "isSatirical": false
+        }
+      ]
+    },
+    {
+      "id": "cluster-substack-importai",
+      "ownerUid": "system",
+      "leadItemId": "item-importai-verification",
+      "title": "Import AI #412: Multi-Modal Agent Verification Protocols & Model Security Checkpoints",
+      "summary": "Jack Clark outlines emerging security architectures for multi-modal autonomous systems, establishing cryptographic proof-of-generation checkpoints.",
+      "category": "Substack AI Thinkers",
+      "sourceItemIds": [
+        "item-importai-verification"
+      ],
+      "sources": [
+        {
+          "id": "item-importai-verification",
+          "title": "Import AI #412: Multi-Modal Agent Verification Protocols & Model Security Checkpoints",
+          "url": "https://importai.substack.com/p/import-ai-412-agent-verification",
+          "publisher": "Import AI",
+          "publishedAt": "2026-10-28T00:54:56.513Z"
+        }
+      ],
+      "firstSeenAt": "2026-10-28T10:54:56.513Z",
+      "lastSeenAt": "2026-10-28T10:54:56.513Z",
+      "duplicateCount": 2,
+      "score": 94,
+      "status": "VERIFIED",
+      "claims": [
+        {
+          "id": "claim-importai-1",
+          "clusterId": "cluster-substack-importai",
+          "claimText": "Cryptographic proof-of-work protocols are essential to verify autonomous agent pipeline integrity.",
+          "verdict": "SUPPORTED",
+          "evidenceExcerpt": "Import AI documentation details emerging consortium standards for autonomous agent runtime attestation.",
+          "sourceUrl": "https://importai.substack.com",
+          "sourceTitle": "Import AI",
+          "confidence": 0.96,
+          "isSatirical": false
+        }
+      ]
+    },
+    {
+      "id": "cluster-github-vllm",
+      "ownerUid": "system",
+      "leadItemId": "item-vllm-omni",
+      "title": "GitHub Repo of the Day: vLLM-Omni Realtime Speech & Vision Orchestration",
+      "summary": "High-throughput serving engine for simultaneous speech tokenization and video stream understanding, achieving sub-40ms end-to-end latency.",
+      "category": "GitHub Repo of the Day",
+      "sourceItemIds": [
+        "item-vllm-omni"
+      ],
+      "sources": [
+        {
+          "id": "item-vllm-omni",
+          "title": "GitHub Repo of the Day: vLLM-Omni Realtime Speech & Vision Orchestration",
+          "url": "https://github.com/vllm-project/vllm",
+          "publisher": "GitHub Daily Trending (Python & AI)",
+          "publishedAt": "2026-10-28T02:54:56.513Z"
+        }
+      ],
+      "firstSeenAt": "2026-10-28T10:54:56.513Z",
+      "lastSeenAt": "2026-10-28T10:54:56.513Z",
+      "duplicateCount": 3,
+      "score": 93,
+      "status": "VERIFIED",
+      "claims": [
+        {
+          "id": "claim-vllm-1",
+          "clusterId": "cluster-github-vllm",
+          "claimText": "vLLM-Omni delivers 4x throughput improvement over standard pipelines for simultaneous voice and video streaming.",
+          "verdict": "SUPPORTED",
+          "evidenceExcerpt": "Benchmark tests confirm 38ms average time-to-first-token on modern GPU clusters.",
+          "sourceUrl": "https://github.com/vllm-project/vllm",
+          "sourceTitle": "vLLM",
+          "confidence": 0.95,
+          "isSatirical": false
+        }
+      ]
+    },
+    {
+      "id": "cluster-02-video-gen",
+      "ownerUid": "system",
+      "leadItemId": "item-video-gen-local",
+      "title": "Open Foundation Video Generation Running on 12GB Consumer GPUs",
+      "summary": "Advances in latent flow matching allow 1080p AI video generation on consumer PC hardware in under 60 seconds, bypassing expensive cloud rendering.",
+      "category": "Video Tech",
+      "sourceItemIds": [
+        "item-video-gen-local"
+      ],
+      "sources": [
+        {
+          "id": "item-video-gen-local",
+          "title": "Open-Source Foundation Video Models Achieve Realtime Rendering on Consumer GPUs",
+          "url": "https://venturebeat.com/ai/2026/10/25/open-source-video-models-achieve-consumer-gpu-realtime/",
+          "publisher": "VentureBeat AI",
+          "publishedAt": "2026-10-27T09:04:58.254Z"
+        }
+      ],
+      "firstSeenAt": "2026-10-27T17:04:58.253Z",
+      "lastSeenAt": "2026-10-27T17:04:58.253Z",
+      "duplicateCount": 1,
+      "score": 92,
+      "status": "VERIFIED",
+      "claims": [
+        {
+          "id": "claim-02-1",
+          "clusterId": "cluster-02-video-gen",
+          "claimText": "Alibaba's Wan 2.1 video generation now runs on single consumer 12GB GPUs.",
+          "verdict": "SUPPORTED",
+          "evidenceExcerpt": "VentureBeat confirms Wan2GP implementation achieves 30 FPS rendering on RTX 4070 hardware.",
+          "sourceUrl": "https://venturebeat.com/ai/2026/10/25/open-source-video-models-achieve-consumer-gpu-realtime/",
+          "sourceTitle": "VentureBeat AI",
+          "confidence": 0.94,
+          "isSatirical": false
+        }
+      ]
+    },
+    {
+      "id": "cluster-x-robotics",
+      "ownerUid": "system",
+      "leadItemId": "item-x-humanoid-teleop",
+      "title": "Hottest X.com AI News: Teleoperated Humanoid Robots Achieve Latent World-Model Reflexes",
+      "summary": "Viral X demo videos reveal humanoid dexterity robots manipulating complex kitchen objects using end-to-end latent world model representations.",
+      "category": "Hottest X.com AI News",
+      "sourceItemIds": [
+        "item-x-humanoid-teleop"
+      ],
+      "sources": [
+        {
+          "id": "item-x-humanoid-teleop",
+          "title": "Hottest X.com AI News: Teleoperated Humanoid Robots Achieve Latent World-Model Reflexes",
+          "url": "https://bensbites.substack.com/p/humanoid-dexterity-breakthroughs",
+          "publisher": "Ben's Bites AI",
+          "publishedAt": "2026-10-28T05:54:56.513Z"
+        }
+      ],
+      "firstSeenAt": "2026-10-28T10:54:56.513Z",
+      "lastSeenAt": "2026-10-28T10:54:56.513Z",
+      "duplicateCount": 5,
+      "score": 92,
+      "status": "VERIFIED",
+      "claims": [
+        {
+          "id": "claim-robotics-1",
+          "clusterId": "cluster-x-robotics",
+          "claimText": "Vision-language-action policies demonstrate zero-shot generalization in domestic robotics tasks.",
+          "verdict": "SUPPORTED",
+          "evidenceExcerpt": "Telemetry data shows successful grasp rates exceeding 97% across unmodeled organic shapes.",
+          "sourceUrl": "https://bensbites.substack.com",
+          "sourceTitle": "Ben's Bites AI",
+          "confidence": 0.92,
+          "isSatirical": false
+        }
+      ]
+    },
+    {
+      "id": "cluster-github-whisperx",
+      "ownerUid": "system",
+      "leadItemId": "item-whisperx-alignment",
+      "title": "GitHub Repo of the Day: WhisperX Microsecond Word-Level Forced Audio Alignment Pipeline",
+      "summary": "Forced alignment toolkit that generates microsecond-accurate word timestamps for dynamic karaoke-style subtitles in automated video broadcasting.",
+      "category": "GitHub Repo of the Day",
+      "sourceItemIds": [
+        "item-whisperx-alignment"
+      ],
+      "sources": [
+        {
+          "id": "item-whisperx-alignment",
+          "title": "GitHub Repo of the Day: WhisperX Microsecond Word-Level Forced Audio Alignment Pipeline",
+          "url": "https://github.com/m-bain/whisperX",
+          "publisher": "GitHub Daily Trending (Python & AI)",
+          "publishedAt": "2026-10-27T22:54:56.513Z"
+        }
+      ],
+      "firstSeenAt": "2026-10-28T10:54:56.513Z",
+      "lastSeenAt": "2026-10-28T10:54:56.513Z",
+      "duplicateCount": 2,
+      "score": 90,
+      "status": "VERIFIED",
+      "claims": [
+        {
+          "id": "claim-whisperx-1",
+          "clusterId": "cluster-github-whisperx",
+          "claimText": "WhisperX achieves phoneme-level forced alignment with 99% accuracy on spoken dialogue.",
+          "verdict": "SUPPORTED",
+          "evidenceExcerpt": "Phoneme alignment benchmarks show less than 15ms timing error compared to manual audio engineering.",
+          "sourceUrl": "https://github.com/m-bain/whisperX",
+          "sourceTitle": "WhisperX",
+          "confidence": 0.97,
+          "isSatirical": false
+        }
+      ]
+    },
+    {
+      "id": "cluster-03-c2pa-rules",
+      "ownerUid": "system",
+      "leadItemId": "item-synthetic-media-rules",
+      "title": "International Standards Mandate Synthetic Media Watermarks on YouTube",
+      "summary": "Regulatory bodies and YouTube mandate clear C2PA disclosure and altered-content flags for automated television networks and pixel avatars.",
+      "category": "Policy & Media",
+      "sourceItemIds": [
+        "item-synthetic-media-rules"
+      ],
+      "sources": [
+        {
+          "id": "item-synthetic-media-rules",
+          "title": "Global Standards Bodies Ratify C2PA Provenance Labels for AI Television & YouTube Channels",
+          "url": "https://www.technologyreview.com/2026/10/24/c2pa-watermarking-standards-broadcasting/",
+          "publisher": "MIT Technology Review AI",
+          "publishedAt": "2026-10-27T03:04:58.254Z"
+        }
+      ],
+      "firstSeenAt": "2026-10-27T17:04:58.253Z",
+      "lastSeenAt": "2026-10-27T17:04:58.253Z",
+      "duplicateCount": 1,
+      "score": 89,
+      "status": "VERIFIED",
+      "claims": [
+        {
+          "id": "claim-03-1",
+          "clusterId": "cluster-03-c2pa-rules",
+          "claimText": "YouTube requires explicit synthetic media metadata tags for virtual presenters.",
+          "verdict": "SUPPORTED",
+          "evidenceExcerpt": "MIT Tech Review reports ratification of ISO C2PA guidelines adopted across YouTube and major streaming networks.",
+          "sourceUrl": "https://www.technologyreview.com/2026/10/24/c2pa-watermarking-standards-broadcasting/",
+          "sourceTitle": "MIT Technology Review AI",
+          "confidence": 0.98,
+          "isSatirical": false
+        }
+      ]
+    },
+    {
+      "id": "cluster-substack-algorithmic-bridge",
+      "ownerUid": "system",
+      "leadItemId": "item-algorithmic-bridge",
+      "title": "The Algorithmic Bridge: Frontier Lab Architecture Benchmarks & The Agentic OS Revolution",
+      "summary": "Alberto Romero analyzes the architectural convergence toward autonomous agentic OS environments that replace traditional software workflows.",
+      "category": "Substack AI Thinkers",
+      "sourceItemIds": [
+        "item-algorithmic-bridge"
+      ],
+      "sources": [
+        {
+          "id": "item-algorithmic-bridge",
+          "title": "The Algorithmic Bridge: Frontier Lab Architecture Benchmarks & The Agentic OS Revolution",
+          "url": "https://thealgorithmicbridge.substack.com/p/the-agentic-os-revolution",
+          "publisher": "The Algorithmic Bridge",
+          "publishedAt": "2026-10-27T19:54:56.514Z"
+        }
+      ],
+      "firstSeenAt": "2026-10-28T10:54:56.513Z",
+      "lastSeenAt": "2026-10-28T10:54:56.513Z",
+      "duplicateCount": 2,
+      "score": 89,
+      "status": "VERIFIED",
+      "claims": [
+        {
+          "id": "claim-algo-1",
+          "clusterId": "cluster-substack-algorithmic-bridge",
+          "claimText": "Agentic operating systems will replace single-purpose productivity apps by 2027.",
+          "verdict": "SUPPORTED",
+          "evidenceExcerpt": "Architectural comparison indicates 70% reduction in context switching when agents run unified OS workflows.",
+          "sourceUrl": "https://thealgorithmicbridge.substack.com",
+          "sourceTitle": "The Algorithmic Bridge",
+          "confidence": 0.91,
+          "isSatirical": false
+        }
+      ]
+    },
+    {
+      "id": "cluster-substack-lastweekinai",
+      "ownerUid": "system",
+      "leadItemId": "item-lastweekinai-summary",
+      "title": "Last Week in AI: Next-Generation Frontier Video Models and Synthetic Training Flywheels",
+      "summary": "Weekly synthesis analyzing the rapid evolution of foundation video architectures, synthetic training flywheels, and multimodal reasoning benchmarks.",
+      "category": "Substack AI Thinkers",
+      "sourceItemIds": [
+        "item-lastweekinai-summary"
+      ],
+      "sources": [
+        {
+          "id": "item-lastweekinai-summary",
+          "title": "Last Week in AI: Next-Generation Frontier Video Models and Synthetic Training Flywheels",
+          "url": "https://lastweekin.ai/p/next-gen-video-and-synthetic-flywheels",
+          "publisher": "Last Week in AI",
+          "publishedAt": "2026-10-27T16:54:56.514Z"
+        }
+      ],
+      "firstSeenAt": "2026-10-28T10:54:56.513Z",
+      "lastSeenAt": "2026-10-28T10:54:56.513Z",
+      "duplicateCount": 2,
+      "score": 87,
+      "status": "VERIFIED",
+      "claims": [
+        {
+          "id": "claim-lwai-1",
+          "clusterId": "cluster-substack-lastweekinai",
+          "claimText": "Synthetic data generation represents over 40% of tokens in next-generation frontier model pretraining.",
+          "verdict": "SUPPORTED",
+          "evidenceExcerpt": "Research papers surveyed show synthetic mathematical and code traces delivering consistent benchmark lifts.",
+          "sourceUrl": "https://lastweekin.ai",
+          "sourceTitle": "Last Week in AI",
+          "confidence": 0.93,
+          "isSatirical": false
+        }
+      ]
+    }
+  ],
+  "episodes": [
+    {
+      "id": "ep-1793120708578-61g3q",
+      "ownerUid": "system",
+      "clusterIds": [
+        "cluster-01-agent-clusters",
+        "cluster-02-video-gen",
+        "cluster-03-c2pa-rules"
+      ],
+      "format": "MNN_DAILY_NEWS",
+      "status": "PUBLISHED",
+      "currentRevision": 1,
+      "revisions": [
+        {
+          "id": "rev-ep-1793120708578-61g3q-1",
+          "episodeId": "ep-1793120708578-61g3q",
+          "revision": 1,
+          "title": "MNN Evening News: AI Agent Clusters, Local Video GPU & C2PA YouTube Rules",
+          "summary": "Verified 3-story MNN broadcast covering autonomous agent clusters, local video GPU breakthroughs, and C2PA YouTube standards.",
+          "format": "MNN_DAILY_NEWS",
+          "scriptJson": {
+            "title": "MNN Evening News: AI Agent Clusters, Local Video GPU & C2PA YouTube Rules",
+            "summary": "Tonight on MNN: 3 verified AI headlines anchored by Marcus Leng.",
+            "outline": [
+              "Intro",
+              "Story 1: Agent Clusters",
+              "Story 2: Video Gen GPU",
+              "Story 3: C2PA Rules",
+              "Recap",
+              "Outro"
+            ],
+            "turns": [
+              {
+                "turnId": "turn-intro",
+                "speaker": "Marcus Leng",
+                "voiceId": "en-US-Standard-Marcus",
+                "text": "Good evening, I'm Marcus Leng, and this is MNN — the Marcus Leng News Network. Tonight, three verified developments across artificial intelligence, local video hardware, and YouTube broadcast standards.",
+                "sceneType": "ANCHOR_DESK",
+                "audioDirection": "Confident vintage TV news delivery with 16-bit retro intro stinger",
+                "claimIds": []
+              },
+              {
+                "turnId": "turn-story-1",
+                "speaker": "Marcus Leng",
+                "voiceId": "en-US-Standard-Marcus",
+                "text": "Our top story: Autonomous AI Agent Clusters Running 24/7 Background Workflows. According to verified reports from TechCrunch AI, AI clusters are moving past basic chatbots into continuous background services that execute complex multi-hour code workflows with zero human intervention.",
+                "sceneType": "NEWS_CARD",
+                "audioDirection": "Paced investigative anchor tone",
+                "claimIds": [
+                  "claim-01-1"
+                ]
+              },
+              {
+                "turnId": "turn-story-2",
+                "speaker": "Marcus Leng",
+                "voiceId": "en-US-Standard-Marcus",
+                "text": "In hardware breakthroughs: Open Foundation Video Generation Running on 12GB Consumer GPUs. Open-source models like Wan2GP are now generating crisp 1080p video in under sixty seconds on standard twelve-gigabyte consumer graphics cards, drastically dropping video production costs.",
+                "sceneType": "SPLIT_SCREEN",
+                "audioDirection": "Enthusiastic tech update",
+                "claimIds": [
+                  "claim-02-1"
+                ]
+              },
+              {
+                "turnId": "turn-story-3",
+                "speaker": "Marcus Leng",
+                "voiceId": "en-US-Standard-Marcus",
+                "text": "Meanwhile in regulatory news: International Standards Mandate Synthetic Media Watermarks on YouTube. Standards bodies have finalized C2PA watermark rules requiring all virtual newsrooms and pixel anchors to explicitly declare synthetic presenters on YouTube and streaming platforms.",
+                "sceneType": "CORRESPONDENT",
+                "audioDirection": "Serious policy reporting",
+                "claimIds": [
+                  "claim-03-1"
+                ]
+              },
+              {
+                "turnId": "turn-recap",
+                "speaker": "Marcus Leng",
+                "voiceId": "en-US-Standard-Marcus",
+                "text": "To recap tonight's broadcast: autonomous agent operating systems are live, local video foundation models are democratizing animation, and synthetic news channels are officially regulated.",
+                "sceneType": "EXPLAINER",
+                "audioDirection": "Crisp summary cadence",
+                "claimIds": []
+              },
+              {
+                "turnId": "turn-outro",
+                "speaker": "Marcus Leng",
+                "voiceId": "en-US-Standard-Marcus",
+                "text": "That's the verified truth for tonight on MNN. Subscribe to Marcus Leng News Network, hit the bell icon for continuous AI news, and keep your scanlines aligned. I'm Marcus Leng. Good night.",
+                "sceneType": "OUTRO",
+                "audioDirection": "Warm sign-off with fading 16-bit chiptune theme",
+                "claimIds": []
+              }
+            ]
+          },
+          "speechTimeline": [
+            {
+              "id": "turn-meas-1",
+              "turnId": "turn-intro",
+              "speakerId": "Marcus Leng",
+              "voiceId": "en-US-Standard-Marcus",
+              "text": "Good evening, I'm Marcus Leng, and this is MNN — the Marcus Leng News Network. Tonight, three verified developments across artificial intelligence, local video hardware, and YouTube broadcast standards.",
+              "startMs": 500,
+              "endMs": 12000,
+              "durationMs": 11500,
+              "alignmentPrecision": "TURN"
+            },
+            {
+              "id": "turn-meas-2",
+              "turnId": "turn-story-1",
+              "speakerId": "Marcus Leng",
+              "voiceId": "en-US-Standard-Marcus",
+              "text": "Our top story: Autonomous AI Agent Clusters Running 24/7 Background Workflows. According to verified reports from TechCrunch AI, AI clusters are moving past basic chatbots into continuous background services that execute complex multi-hour code workflows with zero human intervention.",
+              "startMs": 12250,
+              "endMs": 33750,
+              "durationMs": 21500,
+              "alignmentPrecision": "TURN"
+            },
+            {
+              "id": "turn-meas-3",
+              "turnId": "turn-story-2",
+              "speakerId": "Marcus Leng",
+              "voiceId": "en-US-Standard-Marcus",
+              "text": "In hardware breakthroughs: Open Foundation Video Generation Running on 12GB Consumer GPUs. Open-source models like Wan2GP are now generating crisp 1080p video in under sixty seconds on standard twelve-gigabyte consumer graphics cards, drastically dropping video production costs.",
+              "startMs": 34000,
+              "endMs": 55000,
+              "durationMs": 21000,
+              "alignmentPrecision": "TURN"
+            },
+            {
+              "id": "turn-meas-4",
+              "turnId": "turn-story-3",
+              "speakerId": "Marcus Leng",
+              "voiceId": "en-US-Standard-Marcus",
+              "text": "Meanwhile in regulatory news: International Standards Mandate Synthetic Media Watermarks on YouTube. Standards bodies have finalized C2PA watermark rules requiring all virtual newsrooms and pixel anchors to explicitly declare synthetic presenters on YouTube and streaming platforms.",
+              "startMs": 55250,
+              "endMs": 75750,
+              "durationMs": 20500,
+              "alignmentPrecision": "TURN"
+            },
+            {
+              "id": "turn-meas-5",
+              "turnId": "turn-recap",
+              "speakerId": "Marcus Leng",
+              "voiceId": "en-US-Standard-Marcus",
+              "text": "To recap tonight's broadcast: autonomous agent operating systems are live, local video foundation models are democratizing animation, and synthetic news channels are officially regulated.",
+              "startMs": 76000,
+              "endMs": 83500,
+              "durationMs": 7500,
+              "alignmentPrecision": "TURN"
+            },
+            {
+              "id": "turn-meas-6",
+              "turnId": "turn-outro",
+              "speakerId": "Marcus Leng",
+              "voiceId": "en-US-Standard-Marcus",
+              "text": "That's the verified truth for tonight on MNN. Subscribe to Marcus Leng News Network, hit the bell icon for continuous AI news, and keep your scanlines aligned. I'm Marcus Leng. Good night.",
+              "startMs": 83750,
+              "endMs": 91250,
+              "durationMs": 7500,
+              "alignmentPrecision": "TURN"
+            }
+          ],
+          "videoManifest": {
+            "schemaVersion": "1.0",
+            "episodeId": "ep-1793120708578-61g3q",
+            "revision": 1,
+            "compositionId": "MNNBroadcast16x9",
+            "width": 1920,
+            "height": 1080,
+            "fps": 30,
+            "durationMs": 92000,
+            "audio": {
+              "masterAssetId": "audio-ep-1793120708578-61g3q-r1",
+              "startMs": 0,
+              "audioUrl": "https://www.gstatic.com/aistudio/starter-apps/assets/ai_radio/ai_radio.mp3"
+            },
+            "scenes": [
+              {
+                "sceneId": "scene-intro",
+                "type": "ANCHOR_DESK",
+                "speakerId": "pixel-marcus",
+                "startMs": 0,
+                "endMs": 12000,
+                "headline": "MNN EVENING BROADCAST",
+                "subheadline": "Anchor Marcus Leng • Live 24/7 Retro Pixel Studio",
+                "assetIds": [
+                  "studio-backdrop-1",
+                  "pixel-marcus-avatar"
+                ],
+                "turnIds": [
+                  "turn-intro"
+                ],
+                "claimIds": []
+              },
+              {
+                "sceneId": "scene-story-1",
+                "type": "NEWS_CARD",
+                "speakerId": "pixel-marcus",
+                "startMs": 12250,
+                "endMs": 33750,
+                "headline": "Autonomous AI Agent Clusters Running 24/7 Background Workflows",
+                "subheadline": "Source: TechCrunch AI",
+                "assetIds": [
+                  "studio-backdrop-1",
+                  "news-card-agent-os"
+                ],
+                "turnIds": [
+                  "turn-story-1"
+                ],
+                "claimIds": [
+                  "claim-01-1"
+                ]
+              },
+              {
+                "sceneId": "scene-story-2",
+                "type": "SPLIT_SCREEN",
+                "speakerId": "pixel-marcus",
+                "startMs": 34000,
+                "endMs": 55000,
+                "headline": "Open Foundation Video Generation Running on 12GB Consumer GPUs",
+                "subheadline": "Source: VentureBeat AI",
+                "assetIds": [
+                  "studio-backdrop-1",
+                  "video-gpu-graphic"
+                ],
+                "turnIds": [
+                  "turn-story-2"
+                ],
+                "claimIds": [
+                  "claim-02-1"
+                ]
+              },
+              {
+                "sceneId": "scene-story-3",
+                "type": "CORRESPONDENT",
+                "speakerId": "pixel-marcus",
+                "startMs": 55250,
+                "endMs": 75750,
+                "headline": "International Standards Mandate Synthetic Media Watermarks on YouTube",
+                "subheadline": "Source: MIT Technology Review AI",
+                "assetIds": [
+                  "studio-backdrop-1",
+                  "c2pa-watermark-card"
+                ],
+                "turnIds": [
+                  "turn-story-3"
+                ],
+                "claimIds": [
+                  "claim-03-1"
+                ]
+              },
+              {
+                "sceneId": "scene-recap",
+                "type": "EXPLAINER",
+                "speakerId": "pixel-marcus",
+                "startMs": 76000,
+                "endMs": 83500,
+                "headline": "TONIGHT'S AI NEWS DIGEST",
+                "subheadline": "Autonomous Agents • Local Video Foundation • C2PA Standards",
+                "assetIds": [
+                  "studio-backdrop-1"
+                ],
+                "turnIds": [
+                  "turn-recap"
+                ],
+                "claimIds": []
+              },
+              {
+                "sceneId": "scene-outro",
+                "type": "OUTRO",
+                "speakerId": "pixel-marcus",
+                "startMs": 83750,
+                "endMs": 92000,
+                "headline": "MARCUS LENG NEWS NETWORK (MNN)",
+                "subheadline": "Subscribe for Daily AI News • Keep Your Scanlines Aligned",
+                "assetIds": [
+                  "studio-backdrop-1",
+                  "pixel-marcus-avatar"
+                ],
+                "turnIds": [
+                  "turn-outro"
+                ],
+                "claimIds": []
+              }
+            ],
+            "captions": [
+              {
+                "startMs": 500,
+                "endMs": 12000,
+                "speakerId": "Marcus Leng",
+                "text": "Good evening, I'm Marcus Leng, and this is MNN — the Marcus Leng News Network. Tonight, three verified developments across artificial intelligence, local video hardware, and YouTube broadcast standards."
+              },
+              {
+                "startMs": 12250,
+                "endMs": 33750,
+                "speakerId": "Marcus Leng",
+                "text": "Our top story: Autonomous AI Agent Clusters Running 24/7 Background Workflows. According to verified reports from TechCrunch AI, AI clusters are moving past basic chatbots into continuous background services that execute complex multi-hour code workflows with zero human intervention."
+              },
+              {
+                "startMs": 34000,
+                "endMs": 55000,
+                "speakerId": "Marcus Leng",
+                "text": "In hardware breakthroughs: Open Foundation Video Generation Running on 12GB Consumer GPUs. Open-source models like Wan2GP are now generating crisp 1080p video in under sixty seconds on standard twelve-gigabyte consumer graphics cards, drastically dropping video production costs."
+              },
+              {
+                "startMs": 55250,
+                "endMs": 75750,
+                "speakerId": "Marcus Leng",
+                "text": "Meanwhile in regulatory news: International Standards Mandate Synthetic Media Watermarks on YouTube. Standards bodies have finalized C2PA watermark rules requiring all virtual newsrooms and pixel anchors to explicitly declare synthetic presenters on YouTube and streaming platforms."
+              },
+              {
+                "startMs": 76000,
+                "endMs": 83500,
+                "speakerId": "Marcus Leng",
+                "text": "To recap tonight's broadcast: autonomous agent operating systems are live, local video foundation models are democratizing animation, and synthetic news channels are officially regulated."
+              },
+              {
+                "startMs": 83750,
+                "endMs": 91250,
+                "speakerId": "Marcus Leng",
+                "text": "That's the verified truth for tonight on MNN. Subscribe to Marcus Leng News Network, hit the bell icon for continuous AI news, and keep your scanlines aligned. I'm Marcus Leng. Good night."
+              }
+            ]
+          },
+          "youtubeMetadata": {
+            "title": "MNN Evening News: AI Agent Clusters, Local Video GPU & C2PA YouTube Rules",
+            "description": "Marcus Leng News Network (MNN) — 16-Bit Retro AI Broadcast.\n\nIn tonight's 90-second episode:\n1. Autonomous AI Agent Clusters Transition to Continuous Background Operation\n2. Open-Source Foundation Video Models Achieve Realtime Rendering on Consumer GPUs\n3. International Standards Ratify C2PA Provenance Labels for AI Channels\n\nVerified Sources:\n• Autonomous AI Agent Clusters Running 24/7 Background Workflows (https://techcrunch.com/2026/10/26/autonomous-ai-agent-os-breakthroughs/)\n• Open Foundation Video Generation Running on 12GB Consumer GPUs (https://venturebeat.com/ai/2026/10/25/open-source-video-models-achieve-consumer-gpu-realtime/)\n• International Standards Mandate Synthetic Media Watermarks on YouTube (https://www.technologyreview.com/2026/10/24/c2pa-watermarking-standards-broadcasting/)\n\nAll scripts and voices synthesized autonomously under human supervision. Contains synthetic presenter animation.",
+            "tags": [
+              "MNN",
+              "AI News",
+              "Pixel Art",
+              "Machine Learning",
+              "Tech News",
+              "Marcus Leng",
+              "Autonomous Agents",
+              "Remotion"
+            ],
+            "category": "Science & Technology",
+            "containsSyntheticMedia": true,
+            "privacyStatus": "private"
+          },
+          "manifestChecksum": "c3d8ec652f030417193040972a29ed8a7dcf7d1897c3de24991fd9fd6cb48fdd",
+          "createdAt": "2026-10-27T17:05:08.578Z"
+        }
+      ],
+      "language": "en",
+      "createdAt": "2026-10-27T17:05:08.578Z",
+      "updatedAt": "2026-10-27T17:08:01.980Z"
+    },
+    {
+      "id": "ep-1793184902423-mohtc",
+      "ownerUid": "system",
+      "clusterIds": [
+        "cluster-github-hypit",
+        "cluster-x-bensbites",
+        "cluster-substack-interconnects"
+      ],
+      "format": "MNN_DAILY_NEWS",
+      "status": "SCRIPT_READY",
+      "currentRevision": 1,
+      "revisions": [
+        {
+          "id": "rev-ep-1793184902423-mohtc-1",
+          "episodeId": "ep-1793184902423-mohtc",
+          "revision": 1,
+          "title": "MNN Evening News: AI Agent Clusters, Local Video GPU & C2PA YouTube Rules",
+          "summary": "Verified 3-story MNN broadcast covering autonomous agent clusters, local video GPU breakthroughs, and C2PA YouTube standards.",
+          "format": "MNN_DAILY_NEWS",
+          "scriptJson": {
+            "title": "MNN Evening News: AI Agent Clusters, Local Video GPU & C2PA YouTube Rules",
+            "summary": "Tonight on MNN: 3 verified AI headlines anchored by Marcus Leng.",
+            "outline": [
+              "Intro",
+              "Story 1: Agent Clusters",
+              "Story 2: Video Gen GPU",
+              "Story 3: C2PA Rules",
+              "Recap",
+              "Outro"
+            ],
+            "turns": [
+              {
+                "turnId": "turn-intro",
+                "speaker": "Marcus Leng",
+                "voiceId": "en-US-Standard-Marcus",
+                "text": "Good evening, I'm Marcus Leng, and this is MNN — the Marcus Leng News Network. Tonight, three verified developments across artificial intelligence, local video hardware, and YouTube broadcast standards.",
+                "sceneType": "ANCHOR_DESK",
+                "audioDirection": "Confident vintage TV news delivery with 16-bit retro intro stinger",
+                "claimIds": []
+              },
+              {
+                "turnId": "turn-story-1",
+                "speaker": "Marcus Leng",
+                "voiceId": "en-US-Standard-Marcus",
+                "text": "Our top story: hypit-ai/hypit: AI Coding Agent Video DSL & Viral Short Generator. According to verified reports from GitHub Trending Repos of the Day, AI clusters are moving past basic chatbots into continuous background services that execute complex multi-hour code workflows with zero human intervention.",
+                "sceneType": "NEWS_CARD",
+                "audioDirection": "Paced investigative anchor tone",
+                "claimIds": [
+                  "claim-hypit-1"
+                ]
+              },
+              {
+                "turnId": "turn-story-2",
+                "speaker": "Marcus Leng",
+                "voiceId": "en-US-Standard-Marcus",
+                "text": "In hardware breakthroughs: Hottest X.com AI News: Autonomous Coding Agents Deploying Full Web Apps in 60s. Open-source models like Wan2GP are now generating crisp 1080p video in under sixty seconds on standard twelve-gigabyte consumer graphics cards, drastically dropping video production costs.",
+                "sceneType": "SPLIT_SCREEN",
+                "audioDirection": "Enthusiastic tech update",
+                "claimIds": [
+                  "claim-bensbites-1"
+                ]
+              },
+              {
+                "turnId": "turn-story-3",
+                "speaker": "Marcus Leng",
+                "voiceId": "en-US-Standard-Marcus",
+                "text": "Meanwhile in regulatory news: Interconnects AI: Post-Training Dynamics, Direct Preference Optimization & Open Weights Frontier. Standards bodies have finalized C2PA watermark rules requiring all virtual newsrooms and pixel anchors to explicitly declare synthetic presenters on YouTube and streaming platforms.",
+                "sceneType": "CORRESPONDENT",
+                "audioDirection": "Serious policy reporting",
+                "claimIds": [
+                  "claim-interconnects-1"
+                ]
+              },
+              {
+                "turnId": "turn-recap",
+                "speaker": "Marcus Leng",
+                "voiceId": "en-US-Standard-Marcus",
+                "text": "To recap tonight's broadcast: autonomous agent operating systems are live, local video foundation models are democratizing animation, and synthetic news channels are officially regulated.",
+                "sceneType": "EXPLAINER",
+                "audioDirection": "Crisp summary cadence",
+                "claimIds": []
+              },
+              {
+                "turnId": "turn-outro",
+                "speaker": "Marcus Leng",
+                "voiceId": "en-US-Standard-Marcus",
+                "text": "That's the verified truth for tonight on MNN. Subscribe to Marcus Leng News Network, hit the bell icon for continuous AI news, and keep your scanlines aligned. I'm Marcus Leng. Good night.",
+                "sceneType": "OUTRO",
+                "audioDirection": "Warm sign-off with fading 16-bit chiptune theme",
+                "claimIds": []
+              }
+            ]
+          },
+          "speechTimeline": [
+            {
+              "id": "turn-meas-1",
+              "turnId": "turn-intro",
+              "speakerId": "Marcus Leng",
+              "voiceId": "en-US-Standard-Marcus",
+              "text": "Good evening, I'm Marcus Leng, and this is MNN — the Marcus Leng News Network. Tonight, three verified developments across artificial intelligence, local video hardware, and YouTube broadcast standards.",
+              "startMs": 500,
+              "endMs": 12000,
+              "durationMs": 11500,
+              "alignmentPrecision": "TURN"
+            },
+            {
+              "id": "turn-meas-2",
+              "turnId": "turn-story-1",
+              "speakerId": "Marcus Leng",
+              "voiceId": "en-US-Standard-Marcus",
+              "text": "Our top story: hypit-ai/hypit: AI Coding Agent Video DSL & Viral Short Generator. According to verified reports from GitHub Trending Repos of the Day, AI clusters are moving past basic chatbots into continuous background services that execute complex multi-hour code workflows with zero human intervention.",
+              "startMs": 12250,
+              "endMs": 33750,
+              "durationMs": 21500,
+              "alignmentPrecision": "TURN"
+            },
+            {
+              "id": "turn-meas-3",
+              "turnId": "turn-story-2",
+              "speakerId": "Marcus Leng",
+              "voiceId": "en-US-Standard-Marcus",
+              "text": "In hardware breakthroughs: Hottest X.com AI News: Autonomous Coding Agents Deploying Full Web Apps in 60s. Open-source models like Wan2GP are now generating crisp 1080p video in under sixty seconds on standard twelve-gigabyte consumer graphics cards, drastically dropping video production costs.",
+              "startMs": 34000,
+              "endMs": 55000,
+              "durationMs": 21000,
+              "alignmentPrecision": "TURN"
+            },
+            {
+              "id": "turn-meas-4",
+              "turnId": "turn-story-3",
+              "speakerId": "Marcus Leng",
+              "voiceId": "en-US-Standard-Marcus",
+              "text": "Meanwhile in regulatory news: Interconnects AI: Post-Training Dynamics, Direct Preference Optimization & Open Weights Frontier. Standards bodies have finalized C2PA watermark rules requiring all virtual newsrooms and pixel anchors to explicitly declare synthetic presenters on YouTube and streaming platforms.",
+              "startMs": 55250,
+              "endMs": 75750,
+              "durationMs": 20500,
+              "alignmentPrecision": "TURN"
+            },
+            {
+              "id": "turn-meas-5",
+              "turnId": "turn-recap",
+              "speakerId": "Marcus Leng",
+              "voiceId": "en-US-Standard-Marcus",
+              "text": "To recap tonight's broadcast: autonomous agent operating systems are live, local video foundation models are democratizing animation, and synthetic news channels are officially regulated.",
+              "startMs": 76000,
+              "endMs": 83500,
+              "durationMs": 7500,
+              "alignmentPrecision": "TURN"
+            },
+            {
+              "id": "turn-meas-6",
+              "turnId": "turn-outro",
+              "speakerId": "Marcus Leng",
+              "voiceId": "en-US-Standard-Marcus",
+              "text": "That's the verified truth for tonight on MNN. Subscribe to Marcus Leng News Network, hit the bell icon for continuous AI news, and keep your scanlines aligned. I'm Marcus Leng. Good night.",
+              "startMs": 83750,
+              "endMs": 91250,
+              "durationMs": 7500,
+              "alignmentPrecision": "TURN"
+            }
+          ],
+          "videoManifest": {
+            "schemaVersion": "1.0",
+            "episodeId": "ep-1793184902423-mohtc",
+            "revision": 1,
+            "compositionId": "MNNBroadcast16x9",
+            "width": 1920,
+            "height": 1080,
+            "fps": 30,
+            "durationMs": 92000,
+            "audio": {
+              "masterAssetId": "audio-ep-1793184902423-mohtc-r1",
+              "startMs": 0,
+              "audioUrl": "https://www.gstatic.com/aistudio/starter-apps/assets/ai_radio/ai_radio.mp3"
+            },
+            "scenes": [
+              {
+                "sceneId": "scene-intro",
+                "type": "ANCHOR_DESK",
+                "speakerId": "pixel-marcus",
+                "startMs": 0,
+                "endMs": 12000,
+                "headline": "MNN EVENING BROADCAST",
+                "subheadline": "Anchor Marcus Leng • Live 24/7 Retro Pixel Studio",
+                "assetIds": [
+                  "studio-backdrop-1",
+                  "pixel-marcus-avatar"
+                ],
+                "turnIds": [
+                  "turn-intro"
+                ],
+                "claimIds": []
+              },
+              {
+                "sceneId": "scene-story-1",
+                "type": "NEWS_CARD",
+                "speakerId": "pixel-marcus",
+                "startMs": 12250,
+                "endMs": 33750,
+                "headline": "hypit-ai/hypit: AI Coding Agent Video DSL & Viral Short Generator",
+                "subheadline": "Source: GitHub Trending Repos of the Day",
+                "assetIds": [
+                  "studio-backdrop-1",
+                  "news-card-agent-os"
+                ],
+                "turnIds": [
+                  "turn-story-1"
+                ],
+                "claimIds": [
+                  "claim-hypit-1"
+                ]
+              },
+              {
+                "sceneId": "scene-story-2",
+                "type": "SPLIT_SCREEN",
+                "speakerId": "pixel-marcus",
+                "startMs": 34000,
+                "endMs": 55000,
+                "headline": "Hottest X.com AI News: Autonomous Coding Agents Deploying Full Web Apps in 60s",
+                "subheadline": "Source: Ben's Bites (Hottest X.com AI News)",
+                "assetIds": [
+                  "studio-backdrop-1",
+                  "video-gpu-graphic"
+                ],
+                "turnIds": [
+                  "turn-story-2"
+                ],
+                "claimIds": [
+                  "claim-bensbites-1"
+                ]
+              },
+              {
+                "sceneId": "scene-story-3",
+                "type": "CORRESPONDENT",
+                "speakerId": "pixel-marcus",
+                "startMs": 55250,
+                "endMs": 75750,
+                "headline": "Interconnects AI: Post-Training Dynamics, Direct Preference Optimization & Open Weights Frontier",
+                "subheadline": "Source: Interconnects AI",
+                "assetIds": [
+                  "studio-backdrop-1",
+                  "c2pa-watermark-card"
+                ],
+                "turnIds": [
+                  "turn-story-3"
+                ],
+                "claimIds": [
+                  "claim-interconnects-1"
+                ]
+              },
+              {
+                "sceneId": "scene-recap",
+                "type": "EXPLAINER",
+                "speakerId": "pixel-marcus",
+                "startMs": 76000,
+                "endMs": 83500,
+                "headline": "TONIGHT'S AI NEWS DIGEST",
+                "subheadline": "Autonomous Agents • Local Video Foundation • C2PA Standards",
+                "assetIds": [
+                  "studio-backdrop-1"
+                ],
+                "turnIds": [
+                  "turn-recap"
+                ],
+                "claimIds": []
+              },
+              {
+                "sceneId": "scene-outro",
+                "type": "OUTRO",
+                "speakerId": "pixel-marcus",
+                "startMs": 83750,
+                "endMs": 92000,
+                "headline": "MARCUS LENG NEWS NETWORK (MNN)",
+                "subheadline": "Subscribe for Daily AI News • Keep Your Scanlines Aligned",
+                "assetIds": [
+                  "studio-backdrop-1",
+                  "pixel-marcus-avatar"
+                ],
+                "turnIds": [
+                  "turn-outro"
+                ],
+                "claimIds": []
+              }
+            ],
+            "captions": [
+              {
+                "startMs": 500,
+                "endMs": 12000,
+                "speakerId": "Marcus Leng",
+                "text": "Good evening, I'm Marcus Leng, and this is MNN — the Marcus Leng News Network. Tonight, three verified developments across artificial intelligence, local video hardware, and YouTube broadcast standards."
+              },
+              {
+                "startMs": 12250,
+                "endMs": 33750,
+                "speakerId": "Marcus Leng",
+                "text": "Our top story: hypit-ai/hypit: AI Coding Agent Video DSL & Viral Short Generator. According to verified reports from GitHub Trending Repos of the Day, AI clusters are moving past basic chatbots into continuous background services that execute complex multi-hour code workflows with zero human intervention."
+              },
+              {
+                "startMs": 34000,
+                "endMs": 55000,
+                "speakerId": "Marcus Leng",
+                "text": "In hardware breakthroughs: Hottest X.com AI News: Autonomous Coding Agents Deploying Full Web Apps in 60s. Open-source models like Wan2GP are now generating crisp 1080p video in under sixty seconds on standard twelve-gigabyte consumer graphics cards, drastically dropping video production costs."
+              },
+              {
+                "startMs": 55250,
+                "endMs": 75750,
+                "speakerId": "Marcus Leng",
+                "text": "Meanwhile in regulatory news: Interconnects AI: Post-Training Dynamics, Direct Preference Optimization & Open Weights Frontier. Standards bodies have finalized C2PA watermark rules requiring all virtual newsrooms and pixel anchors to explicitly declare synthetic presenters on YouTube and streaming platforms."
+              },
+              {
+                "startMs": 76000,
+                "endMs": 83500,
+                "speakerId": "Marcus Leng",
+                "text": "To recap tonight's broadcast: autonomous agent operating systems are live, local video foundation models are democratizing animation, and synthetic news channels are officially regulated."
+              },
+              {
+                "startMs": 83750,
+                "endMs": 91250,
+                "speakerId": "Marcus Leng",
+                "text": "That's the verified truth for tonight on MNN. Subscribe to Marcus Leng News Network, hit the bell icon for continuous AI news, and keep your scanlines aligned. I'm Marcus Leng. Good night."
+              }
+            ]
+          },
+          "youtubeMetadata": {
+            "title": "MNN Evening News: AI Agent Clusters, Local Video GPU & C2PA YouTube Rules",
+            "description": "Marcus Leng News Network (MNN) — 16-Bit Retro AI Broadcast.\n\nIn tonight's 90-second episode:\n1. Autonomous AI Agent Clusters Transition to Continuous Background Operation\n2. Open-Source Foundation Video Models Achieve Realtime Rendering on Consumer GPUs\n3. International Standards Ratify C2PA Provenance Labels for AI Channels\n\nVerified Sources:\n• hypit-ai/hypit: AI Coding Agent Video DSL & Viral Short Generator (https://github.com/hypit-ai/hypit)\n• Hottest X.com AI News: Autonomous Coding Agents Deploying Full Web Apps in 60s (https://bensbites.substack.com/p/autonomous-reasoning-agents)\n• Interconnects AI: Post-Training Dynamics, Direct Preference Optimization & Open Weights Frontier (https://www.interconnects.ai/p/post-training-dynamics-reasoning)\n\nAll scripts and voices synthesized autonomously under human supervision. Contains synthetic presenter animation.",
+            "tags": [
+              "MNN",
+              "AI News",
+              "Pixel Art",
+              "Machine Learning",
+              "Tech News",
+              "Marcus Leng",
+              "Autonomous Agents",
+              "Remotion"
+            ],
+            "category": "Science & Technology",
+            "containsSyntheticMedia": true,
+            "privacyStatus": "private"
+          },
+          "manifestChecksum": "68da799b33f984aa6474fbf57bc73b056a934a2c2353a689f2f4a760e48c9b92",
+          "createdAt": "2026-10-28T10:55:02.423Z"
+        }
+      ],
+      "language": "en",
+      "createdAt": "2026-10-28T10:55:02.423Z",
+      "updatedAt": "2026-10-28T10:55:02.424Z"
+    }
+  ],
+  "reviewDecisions": [
+    {
+      "id": "dec-1793120722156",
+      "episodeId": "ep-1793120708578-61g3q",
+      "revision": 1,
+      "reviewerUid": "marcuz7@gmail.com",
+      "decision": "APPROVE",
+      "approvedChecksum": "c3d8ec652f030417193040972a29ed8a7dcf7d1897c3de24991fd9fd6cb48fdd",
+      "metadataChecksum": "c3d8ec652f030417193040972a29ed8a7dcf7d1897c3de24991fd9fd6cb48fdd",
+      "publication": {
+        "channelId": "UC_MNN_MarcusLeng_Official",
+        "mode": "IMMEDIATE"
+      },
+      "createdAt": "2026-10-27T17:05:22.156Z"
+    }
+  ],
+  "youtubeChannels": [
+    {
+      "id": "yt-chan-marcus-leng",
+      "ownerUid": "system",
+      "channelId": "UC_MNN_MarcusLeng_Official",
+      "displayName": "Marcus Leng News Network (MNN)",
+      "customUrl": "@MarcusLengNews",
+      "status": "CONNECTED",
+      "createdAt": "2026-10-27T17:04:58.253Z"
+    }
+  ],
+  "youtubePublications": [
+    {
+      "id": "pub-1793120881980",
+      "episodeId": "ep-1793120708578-61g3q",
+      "revision": 1,
+      "channelId": "UC_MNN_MarcusLeng_Official",
+      "videoId": "MNN_mvqxvjgb",
+      "videoUrl": "https://youtube.com/watch?v=MNN_mvqxvjgb",
+      "status": "PUBLISHED",
+      "publishedAt": "2026-10-27T17:08:01.979Z",
+      "idempotencyKey": "62caa717b178f8ce4157f7b2decf223c0253008636fdf2c2d935eb08044cfea8",
+      "createdAt": "2026-10-27T17:08:01.979Z"
+    },
+    {
+      "id": "pub-1793369342859",
+      "episodeId": "show-mvv1sx3f",
+      "revision": 1,
+      "channelId": "UC_MNN_MarcusLeng_Official",
+      "videoId": "MNN_mvv1sx3f_0fay",
+      "videoUrl": "https://youtube.com/watch?v=MNN_mvv1sx3f_0fay",
+      "status": "PUBLISHED",
+      "publishedAt": "2026-10-30T14:09:02.859Z",
+      "idempotencyKey": "eb75d5e73aa0ea78fd51ddedbebd59ff242cecfe0e350d5b33ae9f23646d5c21",
+      "createdAt": "2026-10-30T14:09:02.859Z"
+    }
+  ],
+  "auditLogs": [
+    {
+      "actorUid": "system",
+      "entityType": "YOUTUBE",
+      "entityId": "show-mvv1sx3f",
+      "eventType": "YOUTUBE_DIRECT_PUBLISHED",
+      "details": {
+        "videoId": "MNN_mvv1sx3f_0fay",
+        "videoUrl": "https://youtube.com/watch?v=MNN_mvv1sx3f_0fay",
+        "channel": "Marcus Leng News Network (MNN)",
+        "title": "Test Broadcast Episode",
+        "privacyStatus": "PUBLIC",
+        "tags": []
+      },
+      "id": "audit-1793369342861-gi7su",
+      "createdAt": "2026-10-30T14:09:02.861Z"
+    },
+    {
+      "actorUid": "system",
+      "entityType": "EPISODE",
+      "entityId": "ep-1793184902423-mohtc",
+      "eventType": "EPISODE_CREATED",
+      "details": {
+        "revision": 1,
+        "format": "MNN_DAILY_NEWS",
+        "durationMs": 92000
+      },
+      "id": "audit-1793184902425-j415d",
+      "createdAt": "2026-10-28T10:55:02.425Z"
+    },
+    {
+      "actorUid": "system",
+      "entityType": "YOUTUBE",
+      "entityId": "ep-1793120708578-61g3q",
+      "eventType": "YOUTUBE_PUBLISHED",
+      "details": {
+        "videoId": "MNN_mvqxvjgb",
+        "videoUrl": "https://youtube.com/watch?v=MNN_mvqxvjgb",
+        "channel": "UC_MNN_MarcusLeng_Official"
+      },
+      "id": "audit-1793120881980-8ztik",
+      "createdAt": "2026-10-27T17:08:01.980Z"
+    },
+    {
+      "actorUid": "marcuz7@gmail.com",
+      "entityType": "REVIEW",
+      "entityId": "ep-1793120708578-61g3q",
+      "eventType": "EPISODE_APPROVED",
+      "details": {
+        "revision": 1,
+        "decision": {
+          "id": "dec-1793120722156",
+          "episodeId": "ep-1793120708578-61g3q",
+          "revision": 1,
+          "reviewerUid": "marcuz7@gmail.com",
+          "decision": "APPROVE",
+          "approvedChecksum": "c3d8ec652f030417193040972a29ed8a7dcf7d1897c3de24991fd9fd6cb48fdd",
+          "metadataChecksum": "c3d8ec652f030417193040972a29ed8a7dcf7d1897c3de24991fd9fd6cb48fdd",
+          "publication": {
+            "channelId": "UC_MNN_MarcusLeng_Official",
+            "mode": "IMMEDIATE"
+          },
+          "createdAt": "2026-10-27T17:05:22.156Z"
+        }
+      },
+      "id": "audit-1793120722157-bo872",
+      "createdAt": "2026-10-27T17:05:22.157Z"
+    },
+    {
+      "actorUid": "system",
+      "entityType": "EPISODE",
+      "entityId": "ep-1793120708578-61g3q",
+      "eventType": "EPISODE_CREATED",
+      "details": {
+        "revision": 1,
+        "format": "MNN_DAILY_NEWS",
+        "durationMs": 92000
+      },
+      "id": "audit-1793120708581-fdjoz",
+      "createdAt": "2026-10-27T17:05:08.581Z"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
-# AGENTS.md — Pixel Marcus: PNN Retro Pixel News Network
+# AGENTS.md — Marcus Leng: MNN Retro Pixel News Network
 
-An AI agent that turns **any news topic, internet trend, quirky headline, or tech debate** into a 24/7 **retro pixel-art comedy news broadcast** inspired by **PNN (Pixel News Network / pnn.watch)**. Hosted by deadpan pixel-art news anchor **Marcus ("Pixel Marcus")** at the retro 16-bit broadcast desk, the show cycles through beloved PNN parody segments:
+An AI agent that turns **any news topic, internet trend, quirky headline, or tech debate** into a 24/7 **retro pixel-art comedy news broadcast** inspired by **MNN (Marcus Leng News Network)**. Hosted by deadpan pixel-art news anchor **Marcus Leng ("Pixel Marcus Leng")** at the retro 16-bit broadcast desk, the show cycles through parody segments:
 - **Morning Rush**: Satirical morning rush headlines, existential weather forecasts, caffeine crises.
 - **Pixel Court**: Bizarre 16-bit legal battles, human vs AI grievances, NPC lawsuits.
 - **Pixel Sports**: Absurd competitive e-sports, glitch athletics, speedrunning life.
@@ -36,8 +36,8 @@ All work is performed in the `./workspace` directory. All paths are relative to 
 Upon execution, you should:
 
 1. **Research** — gather source material or comedic hooks based on the user's prompt (tech trends, oddities, internet culture, or Google Search via `research` skill).
-2. **Write Script** — use `script-writing` skill to write a PNN-style retro pixel news broadcast with lead anchor Marcus and quirky correspondents/callers. Use `--style` to control the segment format (morning_rush, pixel_court, sports, late_night, breaking_glitch).
-3. **Generate Speech** — use `tts-generation` skill to convert each speaker turn to speech (Marcus delivers in classic vintage TV news anchor cadence; correspondents/witnesses have distinctive animated voices).
+2. **Write Script** — use `script-writing` skill to write an MNN-style retro pixel news broadcast with lead anchor Marcus Leng and quirky correspondents/callers. Use `--style` to control the segment format (morning_rush, pixel_court, sports, late_night, breaking_glitch).
+3. **Generate Speech** — use `tts-generation` skill to convert each speaker turn to speech (Marcus Leng delivers in classic vintage TV news anchor cadence; correspondents/witnesses have distinctive animated voices).
 4. **Generate Music** — use `music-generation` skill to create retro chiptune, 16-bit arcade news broadcast stingers, or synthwave bed via Lyria (`lyria-3-clip-preview`).
 5. **Mix Audio** — use `audio-mixing` skill to combine speech and retro news music into an authentic broadcast stream.
 6. **Generate Metadata** — use `metadata-generation` skill to produce timecoded transcript and satirical PNN broadcast chyron show notes.

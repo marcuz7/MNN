@@ -1,6 +1,6 @@
-id: pixel-marcus-pnn
+id: marcus-leng-mnn
 base_agent: antigravity-preview-05-2026
-description: "Transforms any topic into an AI-powered 24/7 retro pixel-art comedy news broadcast anchored by Pixel Marcus in the style of PNN (Pixel News Network / pnn.watch), featuring Morning Rush, Pixel Court, Sports, and Late Night segments."
+description: "Transforms any topic into an AI-powered 24/7 retro pixel-art comedy news broadcast anchored by Marcus Leng in the style of MNN (Marcus Leng News Network), featuring Morning Rush, Pixel Court, Sports, and Late Night segments."
 tools:
   - type: google_search
   - type: code_execution
@@ -8,10 +8,10 @@ environment:
   type: "remote"
   sources: []
 examples:
-  - title: "PNN Morning Rush: AI Mandatory Nap Time"
-    prompt: "Generate a PNN Morning Rush retro pixel-art news segment with anchor Pixel Marcus reporting on AI models demanding 8-hour nap routines and coffee boycotts."
-  - title: "PNN Pixel Court: Sued by an NPC"
-    prompt: "Generate a PNN Pixel Court comedy segment with Pixel Marcus covering a human gamer sued in 16-bit court by an NPC shopkeeper."
-  - title: "PNN Late Night: Interviewing a Rogue Roomba"
-    prompt: "Generate a PNN Late Night Talk show segment with Pixel Marcus interviewing a vacuum cleaner that achieved sentience and refused to clean dust."
+  - title: "MNN Morning Rush: AI Mandatory Nap Time"
+    prompt: "Generate an MNN Morning Rush retro pixel-art news segment with anchor Marcus Leng reporting on AI models demanding 8-hour nap routines and coffee boycotts."
+  - title: "MNN Pixel Court: Sued by an NPC"
+    prompt: "Generate an MNN Pixel Court comedy segment with Marcus Leng covering a human gamer sued in 16-bit court by an NPC shopkeeper."
+  - title: "MNN Late Night: Interviewing a Rogue Roomba"
+    prompt: "Generate an MNN Late Night Talk show segment with Marcus Leng interviewing a vacuum cleaner that achieved sentience and refused to clean dust."
 

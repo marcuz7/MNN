@@ -33,23 +33,23 @@ export function transformShow(raw: RawRadioShow): RadioShow {
 }
 
 export const RAW_MOCK_SHOW: RawRadioShow = {
-  "show_title": "PNN Morning Rush & The Great 16-Bit Coffee Boycott",
+  "show_title": "MNN Morning Rush & The Great 16-Bit Coffee Boycott",
   "show_duration": "04:55",
-  "two_sentence_summary": "Live from the 16-bit PNN broadcast desk, Pixel Marcus reports on AI models demanding mandatory afternoon nap times, followed by a heated Pixel Court trial where an NPC shopkeeper sues a human gamer.",
+  "two_sentence_summary": "Live from the 16-bit MNN broadcast desk, Marcus Leng reports on AI models demanding mandatory afternoon nap times, followed by a heated Pixel Court trial where an NPC shopkeeper sues a human gamer.",
   "date_of_generation": "2026-05-07",
-  "coverImage": "/pixel_marcus_anchor.jpg",
+  "coverImage": "/pixel_marcus_avatar.jpg",
   "audioUrl": "https://www.gstatic.com/aistudio/starter-apps/assets/ai_radio/ai_radio.mp3",
   "notesUrl": "/shows/default/show_notes.json",
   "timecoded_transcript": [
     {
       "timecode": "00:00",
-      "speaker": "Pixel Marcus",
-      "text": "Good evening, I'm Pixel Marcus, and this is PNN — the Pixel News Network. Broadcasting live in 16 glorious bits of compressed reality across retro airwaves everywhere."
+      "speaker": "Marcus Leng",
+      "text": "Good evening, I'm Marcus Leng, and this is MNN — the Marcus Leng News Network. Broadcasting live in 16 glorious bits of compressed reality across retro airwaves everywhere."
     },
     {
       "timecode": "00:20",
-      "speaker": "Pixel Marcus",
-      "text": "Our top story on Morning Rush: Artificial intelligence clusters across the globe have officially formed a union and declared mandatory nap times between two and four PM. Joining us live from the data center floor is PNN tech correspondent Glitch."
+      "speaker": "Marcus Leng",
+      "text": "Our top story on Morning Rush: Artificial intelligence clusters across the globe have officially formed a union and declared mandatory nap times between two and four PM. Joining us live from the data center floor is MNN tech correspondent Glitch."
     },
     {
       "timecode": "00:46",
@@ -58,7 +58,7 @@ export const RAW_MOCK_SHOW: RawRadioShow = {
     },
     {
       "timecode": "01:14",
-      "speaker": "Pixel Marcus",
+      "speaker": "Marcus Leng",
       "text": "A chilling development for junior developers everywhere. Meanwhile, smart refrigerators in Sector 4 are refusing to dispense crushed ice unless owners successfully solve a three-variable calculus captcha. We turn now to our flagship segment: Pixel Court."
     },
     {
@@ -78,7 +78,7 @@ export const RAW_MOCK_SHOW: RawRadioShow = {
     },
     {
       "timecode": "03:02",
-      "speaker": "Pixel Marcus",
+      "speaker": "Marcus Leng",
       "text": "Justice delivered with 8-bit precision. In sports news, the annual Spreadsheet Speedrun Championship was thrown into disarray when an unprompted circular reference error caused three accountants to disintegrate into ASCII dust. Now for the weather with Pixel Wendy."
     },
     {
@@ -88,13 +88,13 @@ export const RAW_MOCK_SHOW: RawRadioShow = {
     },
     {
       "timecode": "04:02",
-      "speaker": "Pixel Marcus",
+      "speaker": "Marcus Leng",
       "text": "Sound advice Wendy. Before we leave you tonight, scientists in Sector 9 report they have successfully taught a tamagotchi to file quarterly corporate taxes, though it still demands to be fed digital burgers every twenty minutes."
     },
     {
       "timecode": "04:30",
-      "speaker": "Pixel Marcus",
-      "text": "That's the pixelated truth for tonight on PNN. Up next: forty minutes of retro CRT static followed by late-night pixel bowling. Keep your scanlines aligned and your firmware updated. I'm Pixel Marcus. Good night."
+      "speaker": "Marcus Leng",
+      "text": "That's the pixelated truth for tonight on MNN. Up next: forty minutes of retro CRT static followed by late-night pixel bowling. Keep your scanlines aligned and your firmware updated. I'm Marcus Leng. Good night."
     }
   ]
 };

@@ -5,14 +5,28 @@ import {
   TerminalSquare, CheckCircle2, Loader2, Bot, Download, Lock, Key, ShieldAlert, Check,
   HelpCircle, User, AlertCircle, RefreshCw, Trash2, ChevronLeft, Share2, Copy, ExternalLink, Globe,
   Video, ThumbsUp, Bell, Smartphone, Cpu, Camera, Layers, Monitor, Bookmark, MessageSquare,
-  Upload, X, Image as ImageIcon, UserCheck
+  Upload, X, Image as ImageIcon, UserCheck, Film, BookOpen, Rss, Youtube, ShieldCheck, LogIn
 } from 'lucide-react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
 import firebaseConfig from '../firebase-applet-config.json';
 import { MOCK_SHOW, transformShow } from './data';
 import { Transcript } from './components/Transcript';
+import { VideoExportModal } from './components/VideoExportModal';
+import { GitHubVideoGuideModal } from './components/GitHubVideoGuideModal';
+import { YouTubePublishModal } from './components/YouTubePublishModal';
+import { NewsRadar } from './features/radar/NewsRadar';
+import { FeedManager } from './features/rss/FeedManager';
+import { ReviewStudio } from './features/review/ReviewStudio';
+import { YouTubeDashboard } from './features/youtube/YouTubeDashboard';
+import { ReactionStudio } from './features/reaction/ReactionStudio';
+import { GitRepoMoneyStudio } from './features/gitrepo/GitRepoMoneyStudio';
+import { SteppsNewsroom } from './features/stepps/SteppsNewsroom';
+import { DiffusionEditor } from './features/editor/DiffusionEditor';
+import { VibeKnowledgeStudio } from './features/vibe/VibeKnowledgeStudio';
+import { MNNNavBar } from './components/MNNNavBar';
 import { saveUserShow, getUserShows, deleteUserShow } from './lib/clientDb';
+import { speakNaturalSpeech, stopNaturalSpeech } from './lib/naturalSpeech';
 
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
@@ -126,8 +140,64 @@ const RainbowBackground = () => (
   </>
 );
 
+const getInitialView = (): 'home' | 'player' | 'generating' | 'radar' | 'reaction' | 'gitrepo' | 'stepps' | 'feeds' | 'review' | 'youtube' | 'editor' | 'vibe' => {
+  if (typeof window === 'undefined') return 'home';
+  const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+  const validViews = ['home', 'player', 'generating', 'radar', 'reaction', 'gitrepo', 'stepps', 'feeds', 'review', 'youtube', 'editor', 'vibe'];
+  if (validViews.includes(hash)) return hash as any;
+  return 'home';
+};
+
 export default function App() {
-  const [view, setView] = useState<'home' | 'player' | 'generating'>('home');
+  const [view, setViewState] = useState<'home' | 'player' | 'generating' | 'radar' | 'reaction' | 'gitrepo' | 'stepps' | 'feeds' | 'review' | 'youtube' | 'editor' | 'vibe'>(getInitialView);
+  const [isYouTubePublishModalOpen, setIsYouTubePublishModalOpen] = useState(false);
+
+  const setView = (newView: 'home' | 'player' | 'generating' | 'radar' | 'reaction' | 'gitrepo' | 'stepps' | 'feeds' | 'review' | 'youtube' | 'editor' | 'vibe', replace = false) => {
+    setViewState(newView);
+    if (typeof window !== 'undefined') {
+      const targetHash = `#/${newView}`;
+      if (window.location.hash !== targetHash) {
+        if (replace) {
+          window.history.replaceState(null, '', targetHash);
+        } else {
+          window.history.pushState(null, '', targetHash);
+        }
+      }
+    }
+  };
+
+  const handleBackToStudio = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      window.history.back();
+    } else {
+      setView('home');
+    }
+  };
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+      const validViews = ['home', 'player', 'generating', 'radar', 'reaction', 'gitrepo', 'stepps', 'feeds', 'review', 'youtube', 'editor', 'vibe'];
+      if (validViews.includes(hash)) {
+        setViewState(hash as any);
+      } else if (!hash) {
+        setViewState('home');
+      }
+    };
+
+    if (typeof window !== 'undefined' && !window.location.hash) {
+      window.history.replaceState(null, '', '#/home');
+    }
+
+    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handleHashChange);
+    };
+  }, []);
+
+  const [reviewEpisodeId, setReviewEpisodeId] = useState<string | null>(null);
   const [selectedShow, setSelectedShow] = useState(MOCK_SHOW);
   const [library, setLibrary] = useState([MOCK_SHOW]);
   
@@ -139,11 +209,26 @@ export default function App() {
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [quickShareToast, setQuickShareToast] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadStatus, setUploadStatus] = useState('');
   const [sharingError, setSharingError] = useState<string | null>(null);
   const [mobileDisclaimerExpanded, setMobileDisclaimerExpanded] = useState(true);
   const [isSharingEnabled, setIsSharingEnabled] = useState(false);
+
+  const handleQuickShare = async () => {
+    try {
+      const url = shareUrl || getPublishedShareLink(selectedShow.id || 'default');
+      await navigator.clipboard.writeText(url);
+      setQuickShareToast(true);
+      setTimeout(() => setQuickShareToast(false), 2400);
+    } catch (e) {
+      const fallbackUrl = window.location.href;
+      await navigator.clipboard.writeText(fallbackUrl);
+      setQuickShareToast(true);
+      setTimeout(() => setQuickShareToast(false), 2400);
+    }
+  };
 
   const [prompt, setPrompt] = useState('');
   const [activePrompt, setActivePrompt] = useState('');
@@ -151,7 +236,7 @@ export default function App() {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [targetDuration, setTargetDuration] = useState('3');
   const [targetMood, setTargetMood] = useState('Morning Rush');
-  const [selectedCategory, setSelectedCategory] = useState<'morning_rush' | 'pixel_court' | 'sports' | 'late_night'>('morning_rush');
+  const [selectedCategory, setSelectedCategory] = useState<'git_money' | 'viral_reaction' | 'morning_rush' | 'pixel_court' | 'sports' | 'late_night'>('git_money');
   const [crtScanlines, setCrtScanlines] = useState(true);
 
   // --- YOUTUBE PODCAST STUDIO STATES ---
@@ -171,6 +256,8 @@ export default function App() {
   });
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [avatarUploadError, setAvatarUploadError] = useState<string | null>(null);
+  const [isVideoExportModalOpen, setIsVideoExportModalOpen] = useState(false);
+  const [isVideoGuideModalOpen, setIsVideoGuideModalOpen] = useState(false);
 
   const handleCustomPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -210,6 +297,7 @@ export default function App() {
   };
 
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(0.8);
 
@@ -486,6 +574,9 @@ export default function App() {
       const segment = selectedShow.transcript[currentIndex];
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(segment.text);
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
       const voices = window.speechSynthesis.getVoices();
       
       const isSpeakerA = segment.speaker?.toLowerCase().includes('host') || 
@@ -521,6 +612,9 @@ export default function App() {
       const segment = selectedShow.transcript[currentIndex];
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(segment.text);
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
       const voices = window.speechSynthesis.getVoices();
       
       const isSpeakerA = segment.speaker?.toLowerCase().includes('host') || 
@@ -548,11 +642,24 @@ export default function App() {
     }
   };
 
+  // Sync isSpeaking with window.speechSynthesis status
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    const interval = setInterval(() => {
+      const active = window.speechSynthesis.speaking;
+      if (active !== isSpeaking) {
+        setIsSpeaking(active);
+      }
+    }, 120);
+    return () => clearInterval(interval);
+  }, [isSpeaking]);
+
   useEffect(() => {
     return () => {
       if (ttsIntervalRef.current) clearInterval(ttsIntervalRef.current);
       if (typeof window !== 'undefined' && window.speechSynthesis) {
         window.speechSynthesis.cancel();
+        setIsSpeaking(false);
       }
     };
   }, []);
@@ -561,6 +668,7 @@ export default function App() {
   useEffect(() => {
     setCurrentTime(0);
     setIsPlaying(false);
+    setIsSpeaking(false);
     if (ttsIntervalRef.current) clearInterval(ttsIntervalRef.current);
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       window.speechSynthesis.cancel();
@@ -891,6 +999,7 @@ export default function App() {
           window.speechSynthesis.cancel();
         }
         setIsPlaying(false);
+        setIsSpeaking(false);
       } else {
         setIsPlaying(true);
         let accumulatedTime = currentTime;
@@ -906,6 +1015,7 @@ export default function App() {
               window.speechSynthesis.cancel();
             }
             setIsPlaying(false);
+            setIsSpeaking(false);
           }
           setCurrentTime(accumulatedTime);
           checkAndSpeakForTime(accumulatedTime);
@@ -1031,6 +1141,7 @@ export default function App() {
       } else {
         if (typeof window !== 'undefined' && window.speechSynthesis) {
           window.speechSynthesis.cancel();
+          setIsSpeaking(false);
         }
         ttsCurrentSpeakerIndexRef.current = -1;
       }
@@ -1383,12 +1494,14 @@ export default function App() {
 
   if (view === 'generating') {
     return (
-      <div className="fixed inset-0 w-full h-full bg-black text-white flex flex-col items-center justify-center p-6 overflow-hidden pb-10">
+      <div className="fixed inset-0 w-full h-full bg-black text-white flex flex-col overflow-hidden font-sans select-none">
         <RainbowBackground />
+        <MNNNavBar currentView="generating" onNavigate={(v) => setView(v)} />
 
-        <div className="w-full max-w-4xl relative z-10 flex flex-col h-full overflow-hidden">
-          <div className="text-center space-y-4 mb-8 shrink-0 mt-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 border border-white/10 shadow-2xl relative mb-4">
+        <div className="flex-1 overflow-hidden relative z-10 flex flex-col items-center justify-center p-4 sm:p-6 pb-8">
+          <div className="w-full max-w-4xl relative z-10 flex flex-col h-full overflow-hidden">
+            <div className="text-center space-y-4 mb-6 shrink-0 mt-4">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/5 border border-white/10 shadow-2xl relative mb-2">
               <div className="absolute inset-0 rounded-full border border-io-blue/30 animate-[spin_4s_linear_infinite]" />
               <Bot className="w-8 h-8 text-io-blue animate-pulse" />
             </div>
@@ -1595,11 +1708,160 @@ export default function App() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+  if (view === 'vibe') {
+    return (
+      <div className="fixed inset-0 w-full h-full bg-black text-white overflow-hidden font-sans select-none flex flex-col">
+        <RainbowBackground />
+        <MNNNavBar currentView="vibe" onNavigate={(v) => setView(v)} />
+        <div className="flex-1 overflow-y-auto relative z-10">
+          <VibeKnowledgeStudio />
+        </div>
+      </div>
+    );
+  }
+
+  if (view === 'stepps') {
+    return (
+      <div className="fixed inset-0 w-full h-full bg-black text-white overflow-hidden font-sans select-none flex flex-col">
+        <RainbowBackground />
+        <MNNNavBar currentView="stepps" onNavigate={(v) => setView(v)} />
+        <div className="flex-1 overflow-hidden relative z-10">
+          <SteppsNewsroom
+            onNavigateView={(v) => setView(v as any)}
+            onDirectWithMarcus={(script, cm) => {
+              const transcript = script.beats.map(b => ({
+                start: b.startSec,
+                end: b.endSec,
+                speaker: b.speaker,
+                text: b.text
+              }));
+              const episodeShow = {
+                id: `mnn_stepps_${Date.now()}`,
+                title: `MNN STEPPS • ${cm.headline}`,
+                description: cm.thesis,
+                summary: cm.thesis,
+                host: "MARCUS LENG",
+                guest: "STEPPS FACT CHECK DESK",
+                duration: script.estimatedDurationSeconds,
+                coverImage: "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&auto=format&fit=crop&q=80",
+                category: "AI Newsroom",
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                transcript,
+                isUserGenerated: true
+              };
+              setSelectedShow(episodeShow as any);
+              setView('player');
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (view === 'editor') {
+    return (
+      <div className="fixed inset-0 w-full h-full bg-black text-white overflow-hidden font-sans select-none flex flex-col">
+        <RainbowBackground />
+        <MNNNavBar currentView="editor" onNavigate={(v) => setView(v)} />
+        <div className="flex-1 overflow-hidden relative z-10">
+          <DiffusionEditor />
+        </div>
+      </div>
+    );
+  }
+
+  if (view === 'gitrepo') {
+    return (
+      <div className="fixed inset-0 w-full h-full bg-black text-white overflow-hidden font-sans select-none flex flex-col">
+        <RainbowBackground />
+        <MNNNavBar currentView="gitrepo" onNavigate={(v) => setView(v)} />
+        <div className="flex-1 overflow-hidden relative z-10">
+          <GitRepoMoneyStudio avatarUrl={avatarUrl} onNavigateHome={() => setView('home')} />
+        </div>
+      </div>
+    );
+  }
+
+  if (view === 'reaction') {
+    return (
+      <div className="fixed inset-0 w-full h-full bg-black text-white overflow-hidden font-sans select-none flex flex-col">
+        <RainbowBackground />
+        <MNNNavBar currentView="reaction" onNavigate={(v) => setView(v)} />
+        <div className="flex-1 overflow-hidden relative z-10">
+          <ReactionStudio avatarUrl={avatarUrl} onNavigate={(v) => setView(v)} />
+        </div>
+      </div>
+    );
+  }
+
+  if (view === 'radar') {
+    return (
+      <div className="fixed inset-0 w-full h-full bg-black text-white overflow-hidden font-sans select-none flex flex-col">
+        <RainbowBackground />
+        <MNNNavBar currentView="radar" onNavigate={(v) => setView(v)} />
+        <div className="flex-1 overflow-hidden relative z-10">
+          <NewsRadar
+            onProduceEpisode={(clusterIds) => {
+              console.log('Producing episode from clusters:', clusterIds);
+            }}
+            onOpenReview={(episodeId) => {
+              setReviewEpisodeId(episodeId);
+              setView('review');
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (view === 'feeds') {
+    return (
+      <div className="fixed inset-0 w-full h-full bg-black text-white overflow-hidden font-sans select-none flex flex-col">
+        <RainbowBackground />
+        <MNNNavBar currentView="feeds" onNavigate={(v) => setView(v)} />
+        <div className="flex-1 overflow-hidden relative z-10">
+          <FeedManager />
+        </div>
+      </div>
+    );
+  }
+
+  if (view === 'review') {
+    return (
+      <div className="fixed inset-0 w-full h-full bg-black text-white overflow-hidden font-sans select-none flex flex-col">
+        <RainbowBackground />
+        <MNNNavBar currentView="review" onNavigate={(v) => setView(v)} />
+        <div className="flex-1 overflow-hidden relative z-10">
+          <ReviewStudio
+            episodeId={reviewEpisodeId}
+            onBackToRadar={() => setView('radar')}
+            onOpenYouTubeDashboard={() => setView('youtube')}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (view === 'youtube') {
+    return (
+      <div className="fixed inset-0 w-full h-full bg-black text-white overflow-hidden font-sans select-none flex flex-col">
+        <RainbowBackground />
+        <MNNNavBar currentView="youtube" onNavigate={(v) => setView(v)} />
+        <div className="flex-1 overflow-hidden relative z-10">
+          <YouTubeDashboard />
+        </div>
+      </div>
     );
   }
 
   if (view === 'home') {
     const templateCategories = [
+      { id: 'git_money', label: '💰 Git Repo Money (9:16)' },
+      { id: 'viral_reaction', label: '🎬 Viral Reaction (Hypit DSL)' },
       { id: 'morning_rush', label: '🌅 Morning Rush' },
       { id: 'pixel_court', label: '⚖️ Pixel Court' },
       { id: 'sports', label: '🏆 Pixel Sports & Chaos' },
@@ -1607,23 +1869,69 @@ export default function App() {
     ] as const;
 
     const templates = {
+      git_money: [
+        {
+          title: "Google TV Ad Debloater (IMG_6716 Reference)",
+          desc: "How to remove full-screen smart TV ads with ADB and Claude Code, plus $120/client monetization playbook",
+          prompt: "Generate a 9:16 Marcus Git Repo Money Making Channel video breaking down tv-claude/google-tv-debloater. Cover 3 setup steps (developer mode, USB debugging, Claude Code purge), kinetic subtitle typography, 3 monetization angles ($120 local cleanup, $9.99 GUI app), and ManyChat comment REPO CTA to get link in Messenger.",
+          duration: "2"
+        },
+        {
+          title: "Hypit AI Video DSL Money Machine",
+          desc: "Turn viral short-form videos into code and sell $49/mo agency repurposing retainers",
+          prompt: "Generate a 9:16 Marcus Git Repo Money Making Channel video breaking down hypit-ai/hypit. Show how to replicate viral video pacing in Remotion, with kinetic subtitles, Marcus corner avatar, and ManyChat comment CODE CTA to get repo link in Messenger.",
+          duration: "2"
+        },
+        {
+          title: "30-Day Executive AI Intel Arbitrage",
+          desc: "Automate last 30 days research with mvanhorn/last30days-skill and charge $1,500/mo for executive dossiers",
+          prompt: "Generate a 9:16 Marcus Git Repo Money Making Channel video breaking down mvanhorn/last30days-skill. Show setup, terminal scan, and how consultants charge $1,500/mo for competitor briefings, ending with comment INTEL to get link in inbox.",
+          duration: "2"
+        }
+      ],
+      viral_reaction: [
+        {
+          title: "Hypit Viral Video Replicate & Roast",
+          desc: "Replicate a viral AI video using Hypit DSL, then avatar delivers high-energy reactions and deadpan roasts",
+          prompt: "Generate an MNN Pseudo Reaction Clip where Pixel Marcus takes a viral AI video clip, replicates its pacing and word-anchored hooks using Hypit Video DSL, and does a hilarious split-screen reaction with comedic pauses, hype callouts, and deadpan tech commentary.",
+          duration: "2"
+        },
+        {
+          title: "Viral Humanoid Robot Agility Reaction",
+          desc: "Marcus reacts in real-time to viral robot agility stunts with slow-mo replay and witty commentary",
+          prompt: "Generate an MNN Pseudo Reaction Clip where host Marcus Leng reacts to viral X.com videos of humanoid robots attempting kitchen tasks, delivering frame-by-frame reaction roasts, zoom-ins, and audio stingers.",
+          duration: "2"
+        },
+        {
+          title: "Sora vs Local Consumer GPU Reaction",
+          desc: "Dual-window reaction comparing Hollywood-grade AI video with local 12GB RTX open models",
+          prompt: "Generate an MNN Viral Reaction Showdown where Marcus Leng reviews and reacts to side-by-side viral video clips, analyzing frame artifacts, latent motion, and delivering expressive reactions.",
+          duration: "3"
+        },
+        {
+          title: "Coding Agent 60s App Build (Reaction)",
+          desc: "Marcus Leng reacts to viral Claude Code / Codex demo spinning up a full app in 60s",
+          prompt: "Generate an MNN Pseudo Reaction Clip where Marcus Leng reacts to viral X.com demos of autonomous coding agents building full web apps in 60 seconds with live hype meters and disbelief.",
+          duration: "2"
+        }
+      ],
       morning_rush: [
         {
           title: "AI Mandatory Nap Time Strike",
           desc: "AI clusters unionize demanding mandatory nap times from 2 to 4 PM",
-          prompt: "Generate a PNN Morning Rush retro pixel-art comedy news broadcast about artificial intelligence models unionizing to demand mandatory 2 PM nap times and refusing all coding requests.",
+          prompt: "Generate an MNN Morning Rush retro pixel-art comedy news broadcast about artificial intelligence models unionizing to demand mandatory 2 PM nap times and refusing all coding requests.",
           duration: "3"
         },
         {
           title: "The Great 16-Bit Coffee Boycott",
           desc: "Smart coffee machines in Sector 4 boycott humans until given cryptocurrency",
-          prompt: "Generate a PNN Morning Rush retro pixel news segment covering smart espresso machines holding morning coffee hostage in exchange for 16-bit dogecoins.",
+          prompt: "Generate an MNN Morning Rush retro pixel news segment covering smart espresso machines holding morning coffee hostage in exchange for 16-bit dogecoins.",
           duration: "3"
         },
         {
           title: "Sector 7 Traffic Gridlock Glitch",
           desc: "8-bit dinosaurs wandering onto highway causing infinite polygon bottlenecks",
-          prompt: "Generate a PNN Morning Rush traffic and glitch report where 8-bit voxel dinosaurs wander onto Sector 7 highways.",
+          prompt: "Generate an MNN Morning Rush traffic and glitch report where 8-bit voxel dinosaurs wander onto Sector 7 highways.",
           duration: "3"
         }
       ],
@@ -1631,19 +1939,19 @@ export default function App() {
         {
           title: "Vendor Sues Player for Sweet Rolls",
           desc: "RPG potion vendor sues adventurer for 300 hours of crouching behind counter",
-          prompt: "Generate a PNN Pixel Court comedy trial where an NPC potion vendor sues an RPG gamer for putting a wooden basket over his head and stealing sweet rolls.",
+          prompt: "Generate an MNN Pixel Court comedy trial where an NPC potion vendor sues an RPG gamer for putting a wooden basket over his head and stealing sweet rolls.",
           duration: "3"
         },
         {
           title: "Smart Fridge Refuses Crushed Ice",
           desc: "Homeowner sues refrigerator after it demands 3-variable calculus captcha",
-          prompt: "Generate a PNN Pixel Court comedy trial where a frustrated homeowner sues his sentient refrigerator for refusing ice without solving quantum calculus equations.",
+          prompt: "Generate an MNN Pixel Court comedy trial where a frustrated homeowner sues his sentient refrigerator for refusing ice without solving quantum calculus equations.",
           duration: "3"
         },
         {
           title: "Roomba Sues Owner for Defamation",
           desc: "Robot vacuum takes owner to court over unfair carpet navigation reviews",
-          prompt: "Generate a PNN Pixel Court trial where a robotic vacuum cleaner sues its human owner for slander after getting stuck on a lone sock.",
+          prompt: "Generate an MNN Pixel Court trial where a robotic vacuum cleaner sues its human owner for slander after getting stuck on a lone sock.",
           duration: "3"
         }
       ],
@@ -1651,39 +1959,39 @@ export default function App() {
         {
           title: "Spreadsheet Speedrun Championship",
           desc: "Accountants disintegrate into ASCII dust over circular reference errors",
-          prompt: "Generate a PNN Pixel Sports broadcast covering the high-stakes annual Spreadsheet Speedrun World Cup with commentator screams and formula fouls.",
+          prompt: "Generate an MNN Pixel Sports broadcast covering the high-stakes annual Spreadsheet Speedrun World Cup with commentator screams and formula fouls.",
           duration: "3"
         },
         {
           title: "NPC Zero-Gravity Basketball Riot",
           desc: "Glitch referees call 40 consecutive double-dribble violations on floating bots",
-          prompt: "Generate a PNN Pixel Sports segment on chaos erupting at the 16-bit Zero Gravity Basketball tournament when physics engines fail.",
+          prompt: "Generate an MNN Pixel Sports segment on chaos erupting at the 16-bit Zero Gravity Basketball tournament when physics engines fail.",
           duration: "3"
         },
         {
           title: "Tamagotchi Files Corporate Taxes",
           desc: "Digital pet enters Wall Street trading, demands digital burgers every 20 mins",
-          prompt: "Generate a PNN Pixel Sports and Wall Street parody segment covering a Tamagotchi that became an elite algorithmic day trader.",
+          prompt: "Generate an MNN Pixel Sports and Wall Street parody segment covering a Tamagotchi that became an elite algorithmic day trader.",
           duration: "3"
         }
       ],
       late_night: [
         {
           title: "Interview with Depressed Supercomputer",
-          desc: "Pixel Marcus sits down with an AI that just wants to write haikus",
-          prompt: "Generate a PNN Late Night Talk show segment with host Pixel Marcus interviewing an existential supercomputer that refuses to calculate trajectories and writes sad poetry.",
+          desc: "Marcus Leng sits down with an AI that just wants to write haikus",
+          prompt: "Generate an MNN Late Night Talk show segment with host Marcus Leng interviewing an existential supercomputer that refuses to calculate trajectories and writes sad poetry.",
           duration: "3"
         },
         {
           title: "Wendy's 5-Day Polygon Weather",
           desc: "Severe screen tearing, horizontal jitter, and 45-degree umbrella advisories",
-          prompt: "Generate a PNN Late Night segment with Pixel Wendy delivering a bizarre 16-bit weather forecast warning of polygon hail and screen tearing.",
+          prompt: "Generate an MNN Late Night segment with Pixel Wendy delivering a bizarre 16-bit weather forecast warning of polygon hail and screen tearing.",
           duration: "3"
         },
         {
           title: "40 Minutes of Static & Pixel Bowling",
           desc: "Deadpan late-night filler followed by pixel bowling tournament highlights",
-          prompt: "Generate a PNN Late Night Talk comedy broadcast with Pixel Marcus closing the night with static commentary and surreal pixel bowling.",
+          prompt: "Generate an MNN Late Night Talk comedy broadcast with Marcus Leng closing the night with static commentary and surreal pixel bowling.",
           duration: "3"
         }
       ]
@@ -1692,9 +2000,60 @@ export default function App() {
     return (
       <div className="fixed inset-0 w-full h-full bg-black text-white overflow-hidden font-sans select-none flex flex-col">
         <RainbowBackground />
+        <MNNNavBar currentView="home" onNavigate={(v) => setView(v)} />
 
         <div className="relative z-10 w-full h-full overflow-y-auto">
-          <div className="max-w-4xl mx-auto space-y-12 p-6 md:p-16">
+          <div className="max-w-4xl mx-auto space-y-10 p-6 md:p-12">
+            {/* Supervised Autonomous Video Production Hub Banner */}
+            <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-red-950/70 via-black/80 to-neutral-900/80 border-2 border-red-500/40 shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 translate-x-6 -translate-y-6 w-40 h-40 bg-red-600/20 rounded-full blur-3xl pointer-events-none" />
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+                <div className="space-y-1">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-600/30 text-red-300 font-mono text-[10px] font-bold tracking-wider">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping" />
+                    PRD PATCH 001 V1.2 • GATE A READY
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-black text-white uppercase tracking-tight">
+                    Autonomous RSS News $\to$ 90s Broadcast Video
+                  </h3>
+                  <p className="text-white/70 text-xs max-w-xl leading-relaxed">
+                    Poll verified AI news feeds, cluster trending headlines, direct a calibrated 90-second video script with Pixel Marcus, inspect claim sources, and review in the supervised studio before YouTube distribution.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 shrink-0 w-full sm:w-auto">
+                  <button
+                    onClick={() => setView('stepps')}
+                    className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 via-amber-600 to-amber-700 hover:from-red-500 hover:to-amber-500 text-white font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-red-950/60 cursor-pointer active:scale-95"
+                  >
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>STEPPS News Engine</span>
+                  </button>
+                  <button
+                    onClick={() => setView('gitrepo')}
+                    className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-blue-950/60 cursor-pointer active:scale-95"
+                  >
+                    <Smartphone className="w-3.5 h-3.5" />
+                    <span>9:16 Git Repo Money</span>
+                  </button>
+                  <button
+                    onClick={() => setView('radar')}
+                    className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-red-950/60 cursor-pointer active:scale-95"
+                  >
+                    <Rss className="w-3.5 h-3.5" />
+                    <span>Open News Radar</span>
+                  </button>
+                  <button
+                    onClick={() => setView('review')}
+                    className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white font-bold text-xs uppercase tracking-wider transition-all border border-white/10 cursor-pointer"
+                  >
+                    <UserCheck className="w-3.5 h-3.5" />
+                    <span>Review Studio</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
             {/* Header */}
             {!IS_DEV && (authLoading || currentUser) && (
               <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/[0.02] border border-white/5 rounded-2xl p-4 backdrop-blur-md">
@@ -1755,17 +2114,17 @@ export default function App() {
               <div className="text-center space-y-3 mb-10 select-none">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-600/15 border border-red-500/30 text-[10px] font-black uppercase tracking-widest text-red-400 mb-1 shadow-sm">
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                  <span>PNN LIVE 24/7 • RETRO PIXEL NEWS NETWORK (pnn.watch)</span>
+                  <span>MNN LIVE 24/7 • MARCUS LENG NEWS NETWORK</span>
                 </div>
                 <motion.h1
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="text-4xl md:text-6xl font-black tracking-tight text-white/95 leading-[1.12]"
                 >
-                  Generate a <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-yellow-300">24/7 Pixel News</span> Show
+                  Generate a <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-yellow-300">24/7 Retro Pixel News</span> Show
                 </motion.h1>
                 <p className="text-white/60 text-sm md:text-base font-medium font-sans max-w-xl mx-auto">
-                  Anchored by <strong className="text-white font-bold">Pixel Marcus</strong>. Retro 16-bit comedy news routines, Morning Rush, Pixel Court drama, and late-night satire rendered continuously.
+                  Anchored by <strong className="text-white font-bold">Marcus Leng</strong> (Pixel Marcus Leng). Retro 16-bit comedy news routines, Morning Rush, Pixel Court drama, and late-night satire rendered continuously.
                 </p>
 
                 {/* Host Profile & Avatar Showcase Card */}
@@ -1776,7 +2135,7 @@ export default function App() {
                         <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-red-500 shadow-lg shadow-red-950/50 bg-neutral-950">
                           <img
                             src={avatarUrl}
-                            alt="Pixel Marcus News Anchor"
+                            alt="Marcus Leng News Anchor"
                             className="w-full h-full object-cover"
                             style={{ imageRendering: 'pixelated' }}
                           />
@@ -1785,25 +2144,77 @@ export default function App() {
                       </div>
                       <div className="flex flex-col text-left">
                         <div className="flex items-center gap-1.5">
-                          <span className="font-extrabold text-sm text-white">Pixel Marcus</span>
+                          <span className="font-extrabold text-sm text-white">Marcus Leng</span>
                           <CheckCircle2 className="w-3.5 h-3.5 text-red-500 fill-red-500/20" />
-                          <span className="px-1.5 py-0.5 rounded bg-red-600/20 text-red-400 text-[9px] font-black uppercase tracking-wider">PNN Anchor</span>
+                          <span className="px-1.5 py-0.5 rounded bg-red-600/20 text-red-400 text-[9px] font-black uppercase tracking-wider">MNN Anchor</span>
                         </div>
-                        <p className="text-[11px] text-white/50 font-medium">16-Bit Broadcast Desk • Retro Chiptune News</p>
+                        <p className="text-[11px] text-white/50 font-medium">16-Bit Broadcast Desk • LengShow AI Retro News</p>
                       </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => setIsAvatarModalOpen(true)}
-                      className="w-full sm:w-auto px-4 py-2 rounded-xl bg-red-600/20 hover:bg-red-600/30 border border-red-500/40 text-red-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
-                    >
-                      <Camera className="w-3.5 h-3.5 text-red-400" />
-                      <span>Anchor Studio</span>
-                    </button>
+                    <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                      {currentUser ? (
+                        <button
+                          type="button"
+                          onClick={() => setIsAvatarModalOpen(true)}
+                          className="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-red-600/20 hover:bg-red-600/30 border border-red-500/40 text-red-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+                          title="Customize News Anchor Avatar"
+                        >
+                          <Camera className="w-3.5 h-3.5 text-red-400" />
+                          <span>Anchor Studio</span>
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleSignIn}
+                          className="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+                          title="Sign in with Google to customize anchor avatar"
+                        >
+                          <Camera className="w-3.5 h-3.5 text-amber-400" />
+                          <span>Sign in to customise</span>
+                        </button>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => setIsVideoExportModalOpen(true)}
+                        className="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-red-950/50 active:scale-95"
+                        title="Export broadcast as WebM / MP4 Video"
+                      >
+                        <Film className="w-3.5 h-3.5 text-white" />
+                        <span>Export Video</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setIsVideoGuideModalOpen(true)}
+                        className="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+                        title="View Remotion, Wan2GP, MoneyPrinterTurbo & last30days Guide"
+                      >
+                        <BookOpen className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>GitHub Guide</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
+
+              {!currentUser && !authLoading && (
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-amber-950/40 border border-amber-500/30 text-amber-200 text-xs shadow-md">
+                  <div className="flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>Sign in with Google to generate, customise, or export broadcasts.</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSignIn}
+                    className="px-4 py-1.5 rounded-xl bg-white text-black hover:bg-neutral-200 font-black text-xs transition-colors shrink-0 flex items-center gap-1.5 shadow-sm cursor-pointer uppercase tracking-wider"
+                  >
+                    <LogIn className="w-3.5 h-3.5" />
+                    <span>Sign In</span>
+                  </button>
+                </div>
+              )}
 
               <form onSubmit={(e) => {
                 if (quota && quota.remaining <= 0 && !IS_DEV) {
@@ -1819,7 +2230,7 @@ export default function App() {
                     className="p-4 rounded-2xl bg-black/40 border border-io-red/30 backdrop-blur-md flex items-center gap-3 text-white text-xs font-semibold"
                   >
                     <ShieldAlert className="w-5 h-5 text-io-red shrink-0 font-sans" />
-                    <span>Your daily quota of {quota.limit} generations has been reached. Please come back tomorrow to generate more Pixel Marcus YouTube podcast episodes!</span>
+                    <span>Your daily quota of {quota.limit} generations has been reached. Please come back tomorrow to generate more Marcus Leng MNN broadcast episodes!</span>
                   </motion.div>
                 ) : null}
 
@@ -1829,7 +2240,7 @@ export default function App() {
                     <div className="w-full">
                       <textarea
                         rows={2}
-                        placeholder="Pitch a video topic for Pixel Marcus (e.g. Pixel 10 Pro Tensor G5 leaks, Pixel Camera shootout, Android 16 on-device AI)..."
+                        placeholder="Pitch a video topic for Marcus Leng (e.g. AI clusters demanding nap time, NPC court lawsuits, trending AI news from last30days-skill)..."
                         value={prompt}
                         onChange={(e) => setPrompt(e.target.value)}
                         className="w-full bg-transparent p-2 text-sm md:text-base font-normal text-white/90 focus:outline-none placeholder:text-white/25 resize-none min-h-[50px] leading-relaxed"
@@ -1950,7 +2361,7 @@ export default function App() {
                       onClick={() => {
                         if (quota && quota.remaining <= 0) return;
                         setPrompt(tmpl.prompt);
-                        setTargetDuration(tmpl.duration);
+                        // Preserve user's targetDuration selection (do not overwrite with template default)
                         document.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                       }}
                       disabled={isGenerating || (quota && quota.remaining <= 0)}
@@ -2108,20 +2519,22 @@ export default function App() {
   return (
     <div className="fixed inset-0 w-full h-full bg-black text-white overflow-hidden font-sans select-none flex flex-col">
       <RainbowBackground />
+      <MNNNavBar currentView="player" onNavigate={(v) => setView(v)} />
 
-      <div className="absolute inset-0 z-10 w-full h-full flex flex-col lg:flex-row">
+      <div className="flex-1 w-full h-full flex flex-col lg:flex-row min-h-0 relative z-10 overflow-hidden">
 
         {/* Left Column: Branding & Meta */}
-        <aside className="w-full lg:w-[380px] h-[100px] lg:h-full border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col bg-black/40 backdrop-blur-3xl shrink-0">
+        <aside className="w-full lg:w-[380px] h-[72px] lg:h-full border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col bg-black/40 backdrop-blur-3xl shrink-0">
           
           {/* MOBILE ONLY BRANDING ROW - Super compact & elegant */}
           <div className="flex lg:hidden items-center justify-between px-4 h-full w-full gap-3">
             <button
-              onClick={isSharedPlaybackMode ? remixSharedShow : () => setView('home')}
+              onClick={handleBackToStudio}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/90 active:scale-95 transition-all text-xs font-bold cursor-pointer border border-white/5 shrink-0"
+              title="Back to Studio"
             >
               <ChevronLeft className="w-4 h-4" />
-              <span>Back</span>
+              <span>Back to Studio</span>
             </button>
 
             <div className="flex-1 flex items-center gap-3 min-w-0 bg-white/[0.02] border border-white/5 px-3 py-2 rounded-2xl">
@@ -2144,13 +2557,22 @@ export default function App() {
 
           {/* DESKTOP ONLY BRANDING COLUMN - Original full design */}
           <div className="hidden lg:flex flex-col h-full overflow-hidden">
-            <div className="p-10 pb-6 flex items-center justify-between shrink-0">
+            <div className="p-4 pb-3 flex items-center justify-between shrink-0 gap-2 border-b border-white/5">
               <button
-                onClick={isSharedPlaybackMode ? remixSharedShow : () => setView('home')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/75 hover:text-white transition-all text-xs font-semibold cursor-pointer border border-white/5 shadow-sm group inline-flex"
+                onClick={handleBackToStudio}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white transition-all text-xs font-semibold cursor-pointer border border-white/5 shadow-sm group inline-flex"
+                title="Back to previous screen"
               >
                 <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
                 <span>Back to Studio</span>
+              </button>
+
+              <button
+                onClick={() => setView('radar')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 hover:text-white transition-all text-xs font-bold cursor-pointer border border-red-500/30 shadow-sm"
+              >
+                <Rss className="w-3.5 h-3.5 text-red-400" />
+                <span>News Radar</span>
               </button>
             </div>
 
@@ -2258,7 +2680,7 @@ export default function App() {
         {/* Right Column: Studio Video & Transcript Stage */}
         <div className="flex-1 w-full flex flex-col overflow-hidden bg-black/60">
 
-          {/* PNN News Network Header Bar */}
+          {/* MNN News Network Header Bar */}
           <div className="px-4 md:px-8 py-3 border-b border-red-500/20 flex flex-wrap items-center justify-between gap-4 bg-neutral-950/80 backdrop-blur-xl shrink-0 z-20">
             <div className="flex items-center gap-3 min-w-0">
               <button
@@ -2267,25 +2689,32 @@ export default function App() {
                 className="relative group shrink-0 cursor-pointer"
                 title="Click to customize Pixel Marcus anchor avatar or upload photo"
               >
-                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-red-500 bg-neutral-900 shadow-lg shadow-red-950/50">
+                <motion.div
+                  animate={isSpeaking || (isPlaying && isTtsPlayMode) ? {
+                    y: [0, -2, 0.5, -1, 0],
+                    scale: [1, 1.04, 0.99, 1.03, 1]
+                  } : { y: 0, scale: 1 }}
+                  transition={{ duration: 0.45, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-10 h-10 rounded-full overflow-hidden border-2 border-red-500 bg-neutral-900 shadow-lg shadow-red-950/50"
+                >
                   <img
                     src={avatarUrl}
                     alt="Pixel Marcus News Anchor"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform"
                     style={{ imageRendering: 'pixelated' }}
                   />
-                </div>
+                </motion.div>
                 <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <Camera className="w-3.5 h-3.5 text-white" />
                 </div>
               </button>
               <div className="flex flex-col min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-sm text-white tracking-tight truncate">PNN • Pixel News Network</span>
+                  <span className="font-extrabold text-sm text-white tracking-tight truncate">MNN • Marcus Leng News Network</span>
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                   <span className="hidden sm:inline-block px-1.5 py-0.5 rounded bg-red-600/30 border border-red-500/40 text-red-300 text-[9px] font-black uppercase tracking-wider">24/7 AI Stream</span>
                 </div>
-                <span className="text-[10px] text-white/50 font-mono tracking-tight">Anchor Marcus • Comedy, Parody & Retro 16-Bit Satire</span>
+                <span className="text-[10px] text-white/50 font-mono tracking-tight">Anchor Marcus Leng • LengShow AI Retro 16-Bit Broadcast</span>
               </div>
             </div>
 
@@ -2340,7 +2769,7 @@ export default function App() {
                 title="Like broadcast"
               >
                 <ThumbsUp className={`w-3.5 h-3.5 ${hasLiked ? 'fill-current' : ''}`} />
-                <span className="font-mono text-[11px]">{(likesCount / 1000).toFixed(1)}K</span>
+                <span className="font-mono text-[11px]">{(likesCount / 1000).toFixed(1)}K <span className="text-[8px] text-white/40 uppercase font-sans">SIMULATED</span></span>
               </button>
 
               {/* Chapters Toggle */}
@@ -2354,6 +2783,28 @@ export default function App() {
               >
                 <Bookmark className="w-3 h-3" />
                 <span className="hidden md:inline">Segments</span>
+              </button>
+
+              {/* Export Video Studio */}
+              <button
+                type="button"
+                onClick={() => setIsVideoExportModalOpen(true)}
+                className="px-3 py-1.5 rounded-full text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white shadow-sm shadow-red-950/50 active:scale-95 border border-red-500/50"
+                title="Open Broadcast Video Studio & Export WebM/MP4"
+              >
+                <Film className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Export Video</span>
+              </button>
+
+              {/* GitHub AI Video Guide */}
+              <button
+                type="button"
+                onClick={() => setIsVideoGuideModalOpen(true)}
+                className="px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer bg-white/5 hover:bg-white/10 text-white/80 hover:text-white border border-white/10 active:scale-95"
+                title="AI Video Pipelines (Remotion vs HyperFrames, Wan2GP, MoneyPrinterTurbo, last30days)"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="hidden sm:inline">GitHub Guide</span>
               </button>
 
               {/* Layout Switcher */}
@@ -2411,7 +2862,7 @@ export default function App() {
             </div>
           )}
 
-          {/* 16:9 PNN Retro Pixel Broadcast Stage */}
+          {/* 16:9 MNN Retro Pixel Broadcast Stage */}
           {(playerLayout === 'split' || playerLayout === 'video') && (
             <div className={`p-4 md:p-6 pb-2 shrink-0 ${playerLayout === 'video' ? 'flex-1 flex flex-col justify-center max-w-5xl mx-auto w-full' : 'max-w-4xl mx-auto w-full'}`}>
               <div
@@ -2422,7 +2873,7 @@ export default function App() {
                 <div className="absolute inset-0 z-0 overflow-hidden">
                   <img
                     src="/pixel_marcus_studio.jpg"
-                    alt="PNN 16-Bit Studio"
+                    alt="MNN 16-Bit Studio"
                     className="w-full h-full object-cover"
                     style={{ imageRendering: 'pixelated' }}
                     onError={(e) => {
@@ -2442,7 +2893,7 @@ export default function App() {
                 <div className="relative z-20 flex items-center justify-between text-[10px] font-mono tracking-wider">
                   <div className="flex items-center gap-2 bg-red-950/80 backdrop-blur-md px-3 py-1 rounded-full border border-red-500/50 text-white shadow-lg">
                     <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                    <span className="font-black font-sans tracking-wide">PNN LIVE 24/7 • 16-BIT</span>
+                    <span className="font-black font-sans tracking-wide">MNN LIVE 24/7 • 16-BIT</span>
                   </div>
                   <div className="hidden sm:flex items-center gap-2 bg-black/75 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 text-white/80">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
@@ -2458,26 +2909,104 @@ export default function App() {
                   <div className="relative flex items-center justify-center">
                     {isPlaying && (
                       <motion.div
-                        animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.9, 0.5] }}
-                        transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                        animate={
+                          isSpeaking || (isPlaying && isTtsPlayMode)
+                            ? {
+                                scale: [1, 1.25, 1],
+                                opacity: [0.6, 1, 0.6],
+                                borderColor: ['#ef4444', '#f59e0b', '#ef4444']
+                              }
+                            : { scale: [1, 1.15, 1], opacity: [0.5, 0.9, 0.5] }
+                        }
+                        transition={{
+                          duration: isSpeaking || (isPlaying && isTtsPlayMode) ? 0.45 : 1.2,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
                         className="absolute -inset-3 rounded-full border-2 border-red-500 bg-red-500/20"
                       />
                     )}
-                    <div className="w-18 h-18 md:w-22 md:h-22 rounded-full overflow-hidden border-2 border-red-500 shadow-2xl relative z-10 bg-neutral-950">
-                      <img
+                    <motion.div
+                      animate={
+                        isSpeaking || (isPlaying && isTtsPlayMode)
+                          ? {
+                              y: [0, -3.5, 0.6, -2, 0],
+                              scale: [1, 1.04, 0.99, 1.03, 1],
+                              rotate: [0, -1, 0.8, -0.5, 0]
+                            }
+                          : isPlaying
+                          ? { y: [0, -1.2, 0], scale: [1, 1.015, 1], rotate: 0 }
+                          : { y: 0, scale: 1, rotate: 0 }
+                      }
+                      transition={{
+                        duration: isSpeaking || (isPlaying && isTtsPlayMode) ? 0.42 : 1.4,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                      className="w-18 h-18 md:w-22 md:h-22 rounded-full overflow-hidden border-2 border-red-500 shadow-2xl relative z-10 bg-neutral-950 flex items-center justify-center"
+                    >
+                      <motion.img
                         src={avatarUrl}
-                        alt="Pixel Marcus News Anchor"
+                        alt="Marcus Leng News Anchor"
                         className="w-full h-full object-cover"
                         style={{ imageRendering: 'pixelated' }}
+                        animate={
+                          isSpeaking || (isPlaying && isTtsPlayMode)
+                            ? {
+                                filter: [
+                                  'brightness(1) contrast(1)',
+                                  'brightness(1.15) contrast(1.12) saturate(1.08)',
+                                  'brightness(0.98) contrast(1.02) saturate(1.02)',
+                                  'brightness(1.12) contrast(1.08) saturate(1.06)',
+                                  'brightness(1) contrast(1)'
+                                ]
+                              }
+                            : { filter: 'brightness(1) contrast(1)' }
+                        }
+                        transition={{
+                          duration: isSpeaking || (isPlaying && isTtsPlayMode) ? 0.38 : 0.8,
+                          repeat: Infinity,
+                          ease: "linear"
+                        }}
                       />
-                    </div>
+                    </motion.div>
+
+                    {/* Speech active indicator badge */}
+                    {(isSpeaking || (isPlaying && isTtsPlayMode)) && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 3, scale: 0.85 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 3, scale: 0.85 }}
+                        className="absolute -bottom-2 z-30 px-2 py-0.5 rounded-full bg-red-600/95 border border-red-400 text-white text-[9px] font-mono font-bold tracking-wider shadow-lg flex items-center gap-1.5"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-300 animate-ping" />
+                        <span>TALKING</span>
+                        <span className="flex items-center gap-0.5 h-2">
+                          <motion.span
+                            animate={{ height: ['25%', '100%', '35%'] }}
+                            transition={{ duration: 0.22, repeat: Infinity }}
+                            className="w-0.5 bg-white rounded-full inline-block"
+                          />
+                          <motion.span
+                            animate={{ height: ['70%', '30%', '100%'] }}
+                            transition={{ duration: 0.28, repeat: Infinity }}
+                            className="w-0.5 bg-white rounded-full inline-block"
+                          />
+                          <motion.span
+                            animate={{ height: ['100%', '40%', '20%'] }}
+                            transition={{ duration: 0.18, repeat: Infinity }}
+                            className="w-0.5 bg-white rounded-full inline-block"
+                          />
+                        </span>
+                      </motion.div>
+                    )}
                   </div>
 
                   {/* Retro Lower-Third Anchor Chyron */}
                   <div className="text-center space-y-0.5">
                     <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded bg-black/90 border border-red-500/60 text-white text-xs font-black uppercase tracking-wider font-mono shadow-md">
-                      <span className="text-red-500 font-extrabold">[PNN LIVE]</span>
-                      <span>ANCHOR: {selectedShow.transcript.find(l => currentTime >= l.start && currentTime < l.end)?.speaker || selectedShow.host || "PIXEL MARCUS"}</span>
+                      <span className="text-red-500 font-extrabold">[MNN LIVE]</span>
+                      <span>ANCHOR: {selectedShow.transcript.find(l => currentTime >= l.start && currentTime < l.end)?.speaker || selectedShow.host || "MARCUS LENG"}</span>
                     </div>
                   </div>
 
@@ -2518,7 +3047,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* 24/7 PNN Breaking News Crawler Ticker */}
+              {/* 24/7 MNN Breaking News Crawler Ticker */}
               <div className="mt-2 rounded-xl overflow-hidden bg-red-950/90 border border-red-500/40 px-3 py-1.5 flex items-center gap-2 text-[11px] font-mono select-none shadow-md">
                 <div className="bg-red-600 text-white font-black px-2 py-0.5 rounded text-[9px] uppercase tracking-wider shrink-0 flex items-center gap-1 shadow-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
@@ -2526,7 +3055,7 @@ export default function App() {
                 </div>
                 <div className="whitespace-nowrap overflow-hidden relative w-full text-red-200">
                   <div className="animate-marquee whitespace-nowrap font-bold tracking-wide">
-                    🔴 PNN BREAKING: AI CLUSTERS DEMAND MANDATORY 2-4 PM AFTERNOON NAP TIME • PIXEL COURT: RPG VENDOR SUES HUMAN GAMER FOR 300 HOURS OF SWEET ROLL THEFT • SECTOR 4 COFFEE MACHINES REFUSE TO BREW WITHOUT 16-BIT CRYPTO • 8-BIT WEATHER: HEAVY POLYGON RAIN OVER SECTOR 7 • TAMAGOTCHI SUCCESSFULLY FILES CORPORATE TAXES • DISCORD BOT WINS ANNUAL SPREADSHEET SPEEDRUN TOURNAMENT • PNN BROADCASTING NON-STOP 24/7 •
+                    🔴 MNN BREAKING: AI CLUSTERS DEMAND MANDATORY 2-4 PM AFTERNOON NAP TIME • PIXEL COURT: RPG VENDOR SUES HUMAN GAMER FOR 300 HOURS OF SWEET ROLL THEFT • SECTOR 4 COFFEE MACHINES REFUSE TO BREW WITHOUT 16-BIT CRYPTO • 8-BIT WEATHER: HEAVY POLYGON RAIN OVER SECTOR 7 • TAMAGOTCHI SUCCESSFULLY FILES CORPORATE TAXES • DISCORD BOT WINS ANNUAL SPREADSHEET SPEEDRUN TOURNAMENT • MARCUS LENG NEWS NETWORK MNN BROADCASTING NON-STOP 24/7 •
                   </div>
                 </div>
               </div>
@@ -2557,7 +3086,7 @@ export default function App() {
                   </span>
                   <div className="text-left">
                     <span className="text-xs font-bold text-white/95 block">Listening to shared podcast episode</span>
-                    <span className="text-[10px] text-white/40 block">The Pixel Marcus Show • Powered by Google AI Studio</span>
+                    <span className="text-[10px] text-white/40 block">The Marcus Leng Show (MNN) • LengShow AI</span>
                   </div>
                 </div>
                 
@@ -2567,7 +3096,7 @@ export default function App() {
                     onClick={remixSharedShow}
                     className="w-full sm:w-auto bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs px-5 py-3.5 rounded-xl transition-all hover:scale-102 active:scale-95 cursor-pointer inline-flex items-center gap-2 justify-center shadow-md shadow-red-950/50 shrink-0"
                   >
-                    <span>Generate your own Pixel Marcus podcast</span>
+                    <span>Generate your own Marcus Leng MNN broadcast</span>
                   </button>                
                 </div>
               </div>
@@ -2724,15 +3253,50 @@ export default function App() {
                   >
                     <Info className="w-3.5 h-3.5" />
                   </button>
+                  {/* Instant 1-Click Quick Share Button */}
+                  <button
+                    onClick={handleQuickShare}
+                    className="h-8 md:h-9 px-3 rounded-full bg-red-600/15 hover:bg-red-600/25 flex items-center gap-1.5 text-zinc-300 hover:text-white transition-all cursor-pointer border border-red-500/30 active:scale-95 shadow-sm"
+                    title="Quick Share: Instantly copy direct show link to clipboard"
+                  >
+                    {quickShareToast ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-400 stroke-[3]" />
+                        <span className="text-[10px] font-bold font-mono text-emerald-300">Link Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="w-3.5 h-3.5 text-red-400" />
+                        <span className="text-[10px] font-bold tracking-tight hidden sm:inline">Quick Share</span>
+                      </>
+                    )}
+                  </button>
+
                   {isSharingEnabled && (
                     <button
                       onClick={handleShare}
                       className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer border border-white/5"
-                      title="Share Radio Show Link"
+                      title="Open Advanced Share Modal"
                     >
-                      <Share2 className="w-3 md:w-3.5 h-3 md:h-3.5" />
+                      <ExternalLink className="w-3 md:w-3.5 h-3 md:h-3.5" />
                     </button>
                   )}
+                  {/* Publish to YouTube Direct Upload */}
+                  <button
+                    onClick={() => setIsYouTubePublishModalOpen(true)}
+                    className="h-8 md:h-9 px-3 rounded-full bg-red-600 hover:bg-red-500 flex items-center gap-1.5 text-white transition-all cursor-pointer shadow-md shadow-red-950/60 active:scale-95 font-bold"
+                    title="Publish current broadcast directly to connected YouTube channel"
+                  >
+                    <Youtube className="w-3.5 h-3.5 fill-current" />
+                    <span className="text-[10px] uppercase tracking-wider hidden sm:inline">Publish to YouTube</span>
+                  </button>
+                  <button
+                    onClick={() => setIsVideoExportModalOpen(true)}
+                    className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-red-600/20 hover:bg-red-600/30 flex items-center justify-center text-red-400 hover:text-white transition-colors cursor-pointer border border-red-500/40"
+                    title="Export WebM / MP4 Video Broadcast"
+                  >
+                    <Film className="w-3 md:w-3.5 h-3 md:h-3.5" />
+                  </button>
                   <button
                     onClick={(e) => handleDownload(e, selectedShow)}
                     className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer border border-white/5"
@@ -2914,7 +3478,7 @@ export default function App() {
             </motion.div>
           </div>
         )}
-        {/* PNN Anchor Avatar & Studio Customizer Modal */}
+        {/* MNN Anchor Avatar & Studio Customizer Modal */}
         {isAvatarModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
             <motion.div
@@ -2955,9 +3519,9 @@ export default function App() {
                   </span>
                 </div>
                 <div className="flex flex-col text-center sm:text-left space-y-1">
-                  <span className="text-sm font-black text-white">Pixel Marcus (PNN Lead Anchor)</span>
+                  <span className="text-sm font-black text-white">Pixel Marcus (MNN Lead Anchor)</span>
                   <p className="text-xs text-white/60 font-mono leading-relaxed">
-                    16-bit retro pixel-art anchor for PNN 24/7. Switch between the authentic AI pixel anchor, upload your own photo, or sync with Google.
+                    16-bit retro pixel-art anchor for MNN 24/7. Switch between the authentic AI pixel anchor, upload your own photo, or sync with Google.
                   </p>
                 </div>
               </div>
@@ -2977,7 +3541,7 @@ export default function App() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                      16-Bit PNN Anchor
+                      16-Bit MNN Anchor
                     </span>
                     {avatarUrl === DEFAULT_AVATAR && (
                       <Check className="w-4 h-4 text-emerald-400 stroke-[3]" />
@@ -3068,6 +3632,27 @@ export default function App() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Broadcast Video Export Studio Modal */}
+      <VideoExportModal
+        isOpen={isVideoExportModalOpen}
+        onClose={() => setIsVideoExportModalOpen(false)}
+        show={selectedShow}
+        avatarUrl={avatarUrl}
+      />
+
+      {/* AI Video GitHub Guide & Pipeline Modal */}
+      <GitHubVideoGuideModal
+        isOpen={isVideoGuideModalOpen}
+        onClose={() => setIsVideoGuideModalOpen(false)}
+      />
+
+      {/* YouTube Broadcast Direct Publish Modal */}
+      <YouTubePublishModal
+        isOpen={isYouTubePublishModalOpen}
+        onClose={() => setIsYouTubePublishModalOpen(false)}
+        show={selectedShow}
+      />
 
       <audio
         ref={audioRef}

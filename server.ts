@@ -9,6 +9,14 @@ import fs from "fs";
 import { Storage } from "@google-cloud/storage";
 import crypto from "crypto";
 import admin from "firebase-admin";
+import { validateSafeUrl } from "./server/lib/ssrfGuard.ts";
+import { rssRouter } from "./server/routes/rss.ts";
+import { storiesRouter } from "./server/routes/stories.ts";
+import { episodesRouter } from "./server/routes/episodes.ts";
+import { youtubeRouter } from "./server/routes/youtube.ts";
+import { steppsRouter } from "./server/routes/stepps.ts";
+import { voxcpmRouter } from "./server/routes/voxcpm.ts";
+import { vibeKnowledgeRouter } from "./server/routes/vibeKnowledge.ts";
 
 const execAsync = util.promisify(exec);
 
@@ -382,6 +390,16 @@ async function startServer() {
     return res.status(403).json({ error: "Local sharing fallback has been completely disabled for security and GCS compliance." });
   });
 
+  // --- MNN RSS-to-Video Patch 001 Routers ---
+  app.use("/api/rss", rssRouter);
+  app.use("/api/stories", storiesRouter);
+  app.use("/api/episodes", episodesRouter);
+  app.use("/api/youtube", youtubeRouter);
+  app.use("/api/mnn/stepps", steppsRouter);
+  app.use("/api/mnn", steppsRouter);
+  app.use("/api/tts/voxcpm", voxcpmRouter);
+  app.use("/api/vibe-knowledge", vibeKnowledgeRouter);
+
   app.get("/api/shares/:id", async (req, res) => {
     try {
       const { id } = req.params;
@@ -426,20 +444,42 @@ async function startServer() {
       return;
     }
     try {
-      const response = await fetch(targetUrl);
+      // Validate safe destination (blocks SSRF, private IPs, metadata endpoints)
+      const validatedUrl = await validateSafeUrl(targetUrl);
+      
+      const response = await fetch(validatedUrl.toString(), {
+        headers: {
+          "User-Agent": "MNN-Broadcast-Downloader/1.0",
+        },
+      });
+
       if (!response.ok) {
         res.status(response.status).send(`Failed to fetch: ${response.statusText}`);
         return;
       }
+
+      // Max size limit: 10MB to avoid memory exhaustion
+      const contentLength = response.headers.get("content-length");
+      if (contentLength && parseInt(contentLength, 10) > 10 * 1024 * 1024) {
+        res.status(413).send("Payload too large: maximum allowed size is 10MB.");
+        return;
+      }
+
       res.setHeader("Content-Type", response.headers.get("Content-Type") || "application/octet-stream");
       res.setHeader("Access-Control-Allow-Origin", "*");
       
       const arrayBuffer = await response.arrayBuffer();
+      if (arrayBuffer.byteLength > 10 * 1024 * 1024) {
+        res.status(413).send("Payload too large: maximum allowed size is 10MB.");
+        return;
+      }
+
       const buffer = Buffer.from(arrayBuffer);
       res.send(buffer);
     } catch (err) {
-      console.error("Download proxy failed:", err);
-      res.status(500).send(`Internal server error: ${err instanceof Error ? err.message : String(err)}`);
+      console.error("[SSRF Guard] Download proxy rejected or failed:", err);
+      const isSecurityError = err instanceof Error && (err.message.includes("Forbidden") || err.message.includes("Invalid URL"));
+      res.status(isSecurityError ? 403 : 500).send(`Error: ${err instanceof Error ? err.message : String(err)}`);
     }
   });
 
@@ -584,7 +624,7 @@ async function startServer() {
       }
     }
 
-    const prompt = `Generate a PNN (Pixel News Network, pnn.watch style) 24/7 retro pixel-art comedy news broadcast about: ${topic}. Target duration: ${duration} minutes. Segment format / mood: ${mood}. Lead news anchor is Pixel Marcus (Marcus). Follow the workflow in AGENTS.md to write a satirical 16-bit news broadcast script with signature PNN intro ("Good evening, I'm Pixel Marcus and this is PNN..."), deadpan news reports, parody correspondents, 16-bit chiptune news stingers, audio mixing, and retro pixel-art show notes and covers.`;
+    const prompt = `Generate an MNN (Marcus Leng News Network, inspired by retro pixel-art comedy news aesthetics) 24/7 retro pixel-art comedy news broadcast about: ${topic}. Target duration: ${duration} minutes. Segment format / mood: ${mood}. Lead news anchor is Marcus Leng (Pixel Marcus Leng). Follow the workflow in AGENTS.md to write a satirical 16-bit news broadcast script with signature MNN intro ("Good evening, I'm Marcus Leng and this is MNN — the Marcus Leng News Network..."), deadpan news reports, parody correspondents, 16-bit chiptune news stingers, audio mixing, and retro pixel-art show notes and covers.`;
 
     res.writeHead(200, {
       "Content-Type": "text/event-stream",

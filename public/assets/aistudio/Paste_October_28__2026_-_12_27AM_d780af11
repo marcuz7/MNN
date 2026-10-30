@@ -1,0 +1,1505 @@
+# MNN — RSS-to-Video Patch 001
+**Implementation-Ready Product Requirements Document**
+
+**Version:** 1.0  
+**Date:** 27 October 2026  
+**Repository:** https://github.com/marcuz7/MNN  
+**Baseline:** `main` at `6936be429b4eb20ced1e2f946b91b1abf2b5a897`  
+**Mode:** SUPERVISED  
+**Priority:** P0  
+**Status:** Specification approved for implementation planning; code not yet modified.
+
+---
+
+## 1. Executive Summary
+
+MNN (MarcusLeng News Network) will evolve from an AI-generated news podcast and simulated broadcast player into an AI-native, RSS-driven YouTube video production system.
+
+The target user journey is:
+
+**Discover → Verify → Script → Voice → Direct → Render → Review → Publish → Learn**
+
+The system autonomously handles research, story selection, script drafting, voice synthesis, visual composition and video production.
+
+**All external publication requires explicit human approval.**
+
+The release must reuse the current MNN implementation and introduce additive modules without breaking podcast generation, downloads, authentication, existing sharing links or archived shows.
+
+### 1.1 Primary user story
+
+> As the MNN channel owner, I want the system to discover interesting AI and technology news through RSS, produce a fully narrated pixel-art television episode featuring Pixel Marcus, and present the finished video for approval so I can publish consistent, original YouTube content without manually editing each video.
+
+### 1.2 Core release outcomes
+
+- Ingest news automatically from configured RSS and Atom feeds.
+- Cluster duplicate or related stories.
+- Rank opportunities for MNN episodes.
+- Gather source-backed facts and identify unsupported claims.
+- Generate an editable broadcast script.
+- Reuse MNN's speech, music and cover-generation pipeline.
+- Generate real moving visuals synchronized to actual speech audio.
+- Export an H.264/AAC MP4 with subtitles and YouTube metadata.
+- Provide a reviewer interface for preview, editing and approval.
+- Upload the approved video to the connected YouTube channel.
+- Support immediate or scheduled publication.
+- Preserve audit trails, provenance, versions and generation costs.
+
+### 1.3 Explicit non-goals
+
+Patch 001 does not include real-time interactive anchors, autonomous public posting without approval, full 24/7 livestreaming, expensive diffusion video generation for every frame, or a multi-channel commercial SaaS marketplace.
+
+These may be developed later.
+
+---
+
+## 2. Existing Codebase and Preservation Contract
+
+### 2.1 Existing assets to retain
+
+| Existing component | Source | Required action |
+|---|---|---|
+| React application and interactive episode player | `src/App.tsx` | Preserve; extract reusable broadcast components |
+| Express backend | `server.ts` | Preserve existing routes; introduce modular routers |
+| Gemini managed-agent integration | `server/lib/agentClient.ts` | Retain behind generation service interface |
+| Research skills | `agent/skills/research/` | Reuse for source enrichment |
+| Script generation | `agent/skills/script-writing/` | Extend output contract |
+| TTS synthesis | `agent/skills/tts-generation/` | Preserve voices; expose individual segment durations |
+| Audio mixing | `agent/skills/audio-mixing/` | Reuse; provide exact timeline manifest |
+| Metadata generation | `agent/skills/metadata-generation/` | Add evidence and scene metadata |
+| Image generation | `agent/skills/cover-image-generation/` | Continue; extend to thumbnails and approved scene assets |
+| Pixel Marcus avatar and studio | `public/` | Retain brand visuals |
+| Firebase authentication | Frontend and backend | Reuse for identity |
+| Google Cloud Storage sharing | `server.ts` | Reuse object storage infrastructure |
+| IndexedDB show history | `src/lib/clientDb.ts` | Maintain backwards compatibility |
+
+### 2.2 Compatibility rules
+
+**BC-001:** The existing `POST /api/generate-show` endpoint must continue accepting `topic`, `duration`, `mood` and `generationId`.
+
+**BC-002:** Existing radio/podcast output must remain playable and downloadable.
+
+**BC-003:** Existing saved episodes and shared URLs must remain accessible.
+
+**BC-004:** Existing Pixel Marcus artwork, characters, voice preferences and show categories must not be overwritten.
+
+**BC-005:** New video features must use feature flags. `MNN_VIDEO_ENABLED=false` must preserve legacy operating behavior.
+
+**BC-006:** Do not rename or delete existing API endpoints as part of Patch 001.
+
+**BC-007:** External third-party repository code must undergo dependency and license review before merging.
+
+**BC-008:** The new public channel must use original MNN branding. PNN serves as functional inspiration, not an authorization to copy protected branding, scripts, characters or media.
+
+---
+
+## 3. Operating Model: Supervised Autonomy
+
+### 3.1 Responsibilities
+
+| Activity | AI / system | Human |
+|---|---|---|
+| Poll RSS feeds | Automatic | Configure feeds |
+| Identify duplicate stories | Automatic | Resolve exceptions |
+| Rank story relevance | Automatic | Override ranking |
+| Verify factual claims | Automated evidence gathering | Review uncertain/high-risk claims |
+| Generate script | Automatic | Edit or approve |
+| Generate narration | Automatic | Preview |
+| Direct animated scenes | Automatic | Override scene choices |
+| Render MP4 | Automatic | Review final output |
+| Prepare title, thumbnail and description | Automatic | Final approval |
+| Publish to YouTube | Only after authorization | Explicitly approve action |
+| Handle failures | Retry bounded operations | Review persistent errors |
+
+### 3.2 Authorization invariant
+
+No operation may cause a video to become publicly visible or scheduled for public visibility without an explicit, authenticated, recorded approval that references the exact immutable video revision and publishing configuration.
+
+Editing the script, video, title, description, thumbnail, channel or scheduled publication details after approval invalidates that approval and requires re-approval.
+
+A button labeled **Approve & Publish** authorizes immediate publication of the shown revision. A button labeled **Approve & Schedule** authorizes the displayed date and time only.
+
+---
+
+## 4. Functional Requirements
+
+## FR-01 — RSS Feed Manager
+
+### Purpose
+
+Enable MNN to continuously discover stories from multiple configured news sources.
+
+### Required capabilities
+
+- Add an RSS/Atom URL.
+- Validate and preview the feed before activation.
+- Enable, disable, edit and delete configured feeds.
+- Store feed name, URL, category, language, priority and poll interval.
+- Support scheduled polling, defaulting to every 30 minutes.
+- Support HTTP conditional requests using ETag and Last-Modified.
+- Parse RSS 2.0 and Atom feeds.
+- Respect publishers' content-access policies.
+- Display last poll time, most recent item, response status and error message.
+- Allow manual refresh.
+- Bound maximum response size, timeouts and item count.
+- Store original source attribution.
+
+### Feed record
+
+Required properties:
+
+`id`, `ownerUid`, `url`, `title`, `category`, `language`, `priority`, `enabled`, `pollIntervalMinutes`, `etag`, `lastModified`, `lastPolledAt`, `nextPollAt`, `lastError`, `createdAt`, `updatedAt`.
+
+### Polling behavior
+
+1. Scheduler selects eligible feeds.
+2. Worker validates destination and fetch policy.
+3. Conditional HTTP fetch is performed.
+4. XML is parsed safely with external entities disabled.
+5. URLs are canonicalized.
+6. Items are upserted idempotently.
+7. Items enter the deduplication pipeline.
+8. Poll results and failures are recorded.
+
+A 304 response must be treated as successful with no new content.
+
+A feed failure must not block unrelated feeds.
+
+### Acceptance criteria
+
+- One configured feed successfully produces persisted news items.
+- A second poll with no new stories creates no duplicate records.
+- Malformed XML is handled without crashing the service.
+- Disabled feeds are never polled.
+- Invalid, private-network or prohibited URLs are rejected.
+- Feed errors are observable in the UI.
+
+---
+
+## FR-02 — News Deduplication and Story Clustering
+
+### Purpose
+
+Avoid generating multiple videos covering the same underlying news event.
+
+### Deduplication stages
+
+**Stage A — Exact identity**
+
+Compare normalized canonical URLs, RSS GUIDs, publisher IDs and content hashes.
+
+**Stage B — Near-duplicate detection**
+
+Use normalized title similarity, entity matching and optional embedding similarity.
+
+**Stage C — Event clustering**
+
+Group independently published reports describing the same event.
+
+The cluster must preserve every source rather than replacing secondary articles with one canonical text.
+
+### Default thresholds
+
+Initial candidate rules (calibrate against a labeled news set):
+
+- Exact canonical URL match: duplicate.
+- Exact normalized content hash: duplicate.
+- Title similarity above 0.92 with matching named entities: candidate duplicate.
+- Semantic similarity above 0.88: send for clustering validation.
+- Lower-confidence cases remain separate until resolved.
+
+Thresholds are configuration values, not guaranteed accuracy levels.
+
+### Output
+
+`StoryCluster` containing:
+
+`id`, `leadItemId`, `title`, `summary`, `sourceItemIds`, `firstSeenAt`, `lastSeenAt`, `duplicateCount`, `score`, `status`.
+
+### Ranking formula
+
+Initial editorial opportunity score:
+
+- Relevance to configured channel topics: 30%.
+- Recency: 20%.
+- Audience interest signals: 20%.
+- Source reliability and factual support: 15%.
+- Visual/storytelling potential: 10%.
+- Novelty against previously published MNN episodes: 5%.
+
+Scores are explainable and displayed to the reviewer.
+
+**Important:** High relevance cannot override a fact-verification failure.
+
+---
+
+## FR-03 — Fact Verification and Evidence Engine
+
+### Purpose
+
+Ensure that MNN's news content is factual even when the delivery includes humor or fictional characters.
+
+### Pipeline
+
+1. Extract atomic factual claims from source material.
+2. Resolve each claim to supporting evidence.
+3. Prefer primary documentation, official announcements and original data.
+4. Seek independent corroboration where appropriate.
+5. Identify contradictions and outdated information.
+6. Mark claims as `SUPPORTED`, `DISPUTED`, `INSUFFICIENT_EVIDENCE` or `SATIRICAL_FICTION`.
+7. Compile an immutable evidence packet for script generation.
+8. Require human resolution of disputed claims before video approval.
+
+### Claim record
+
+Each claim must contain:
+
+- Exact claim text.
+- Associated story ID.
+- Source URL and source title.
+- Evidence excerpt or reference.
+- Publication date when available.
+- Verification outcome.
+- Confidence and reasoning metadata.
+- Whether the claim is presented as fact or fiction.
+
+### Editorial rules
+
+**FACT-001:** News claims must never be invented.
+
+**FACT-002:** Missing facts must be omitted, caveated or explicitly routed for review.
+
+**FACT-003:** Satirical statements cannot be presented as verified news.
+
+**FACT-004:** Comedy segments may be fictional, but must be clearly distinguished from real reporting.
+
+**FACT-005:** Screens, titles and descriptions must not imply fictional stories are real breaking news.
+
+**FACT-006:** Current information requires date-aware sourcing.
+
+**FACT-007:** All referenced visual assets require provenance and usage-rights metadata.
+
+### Gate behavior
+
+Stories with unresolved material contradictions enter `NEEDS_FACT_REVIEW`.
+
+The system may generate a private draft for review but cannot mark the episode ready for approval until the relevant evidence exceptions are resolved.
+
+---
+
+## FR-04 — Pixel Marcus Script Engine
+
+### Purpose
+
+Convert a verified story cluster into an original broadcast script.
+
+### Inputs
+
+- Verified evidence packet.
+- Original source links.
+- Target duration.
+- Language.
+- Tone and program format.
+- Presenter configuration.
+- Previous episode context.
+- Editorial restrictions.
+
+### Initial show formats
+
+| Format | Purpose |
+|---|---|
+| Morning Rush | Multiple technology headlines |
+| Breaking News | One major developing story |
+| AI Explainer | Explain a complex AI development |
+| Pixel Court | Clearly fictional or satirical debate |
+| Late Night | Entertainment-focused technology commentary |
+
+### Required script output
+
+Structured JSON containing:
+
+- Episode title.
+- Summary.
+- Story outline.
+- Ordered speaker turns.
+- Speaker ID and voice profile.
+- Dialogue.
+- Audio direction.
+- Visual scene intention.
+- Relevant supporting claim IDs.
+- Estimated duration.
+- Satire/fiction disclosure flags.
+
+The existing `script.md` must remain available for backwards compatibility.
+
+### Human editing
+
+The reviewer can edit dialogue, change speaker assignment, regenerate a section and request a shorter or longer episode.
+
+Every edit creates a new script revision and invalidates downstream assets affected by the change.
+
+---
+
+## FR-05 — Speech and Accurate Timing
+
+### Current limitation
+
+MNN currently derives some transcript times through model estimates; its fallback approximates each turn as 15 seconds.
+
+This is insufficient for deterministic video synchronization.
+
+### Required implementation
+
+Each generated speech turn must produce:
+
+`turnId`, `speakerId`, `text`, `audioAssetId`, `durationMs`, `sampleRate`, `channels`, `voiceId`, `startMs`, `endMs`.
+
+### Synchronization rules
+
+- Measure each actual synthesized audio file.
+- Concatenate turns in deterministic order.
+- Account for inserted silence and intro padding.
+- Build cumulative absolute timing from media durations.
+- Track audio and music independently.
+- Do not infer final speaker timing solely from LLM output.
+- Use word-level alignment when available.
+- If word-level alignment is unavailable, show per-turn captions with verified start/end times.
+- Never silently fall back to arbitrary fixed-duration subtitles.
+
+The existing Gemini TTS adapter stays supported. Add an optional local TTS adapter only after the first MP4 passes acceptance.
+
+---
+
+## FR-06 — MNN Video Director
+
+### Purpose
+
+Translate the structured script and synchronized audio into a scene-by-scene video timeline.
+
+### Scene types
+
+| Scene type | Function |
+|---|---|
+| `ANCHOR_DESK` | Pixel Marcus narrating in the MNN studio |
+| `SPLIT_SCREEN` | Anchor and relevant secondary visual |
+| `NEWS_CARD` | Story headline with visual and attribution |
+| `CORRESPONDENT` | Alternative speaker/pixel character |
+| `EXPLAINER` | Animated charts, icons and diagrams |
+| `QUOTE_CARD` | Attributed quotation |
+| `TRANSITION` | Show intro, bumper or segment transition |
+| `OUTRO` | Closing message and subscription prompt |
+
+### V0.1 visual requirements
+
+- Reuse the existing Pixel Marcus studio backdrop.
+- Create an independent, renderable presenter layer.
+- Add controlled idle movement and speaking movement.
+- Add a basic audio-envelope-driven mouth animation or speech sprite.
+- Synchronize the active speaker to the speech timeline.
+- Display changing news headlines and source-attributed supporting visuals.
+- Use dynamic lower-thirds.
+- Add a moving news ticker using actual episode headlines.
+- Include captions.
+- Display the MNN brand rather than reusing PNN's protected identity.
+- Only show a `LIVE` indicator during an actual live stream.
+
+Basic mouth movement in V0.1 is not claimed to provide phoneme-accurate lip synchronization. Advanced viseme-driven animation is a separate enhancement.
+
+### Video Director output contract
+
+The canonical `VideoManifestV1` must contain:
+
+```json
+{
+  "schemaVersion": "1.0",
+  "episodeId": "episode-uuid",
+  "revision": 1,
+  "compositionId": "MNNBroadcast16x9",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "durationMs": 180000,
+  "audio": {
+    "masterAssetId": "asset-uuid",
+    "startMs": 0
+  },
+  "scenes": [
+    {
+      "sceneId": "scene-001",
+      "type": "ANCHOR_DESK",
+      "speakerId": "pixel-marcus",
+      "startMs": 0,
+      "endMs": 12000,
+      "headline": "The AI Agent Revolution",
+      "assetIds": ["studio-asset-uuid"],
+      "turnIds": ["turn-001"],
+      "claimIds": ["claim-001"]
+    }
+  ],
+  "captions": [
+    {
+      "startMs": 0,
+      "endMs": 3200,
+      "speakerId": "pixel-marcus",
+      "text": "Good evening. I'm Pixel Marcus."
+    }
+  ]
+}
+```
+
+The manifest must be validated before entering the render queue.
+
+### Timeline invariants
+
+- `durationMs` must equal the measured master-audio duration, adjusted only for explicitly configured opening/closing video padding.
+- Scene start and end times must be ordered and bounded by the composition duration.
+- Every narration interval must have an assigned scene.
+- No subtitle may extend beyond the final composition frame.
+- Assets must resolve to authorized, locally staged or otherwise render-accessible files.
+- A render must be reproducible from the same manifest and asset revision.
+
+---
+
+## FR-07 — Remotion Video Renderer
+
+### Renderer architecture
+
+Use Remotion compositions with deterministic JSON input properties.
+
+Required compositions:
+
+- `MNNBroadcast16x9`
+- `MNNShorts9x16` (additive, not required for first release)
+- `MNNThumbnail16x9`
+
+### Output specification
+
+| Property | V0.1 target |
+|---|---|
+| Resolution | 1920 × 1080 |
+| Frame rate | 30 FPS |
+| Container | MP4 |
+| Video codec | H.264 |
+| Audio codec | AAC |
+| Aspect ratio | 16:9 |
+| Initial duration | 3–5 minutes |
+| Subtitles | Burned-in captions and downloadable SRT |
+| Thumbnail | JPG/PNG, 16:9 |
+| Source metadata | Episode JSON |
+| File storage | Google Cloud Storage or configured local output |
+
+### Rendering sequence
+
+1. Validate manifest.
+2. Validate all asset references and rights.
+3. Stage assets in the isolated render workspace.
+4. Calculate duration in frames.
+5. Bundle/select Remotion composition.
+6. Render video and audio.
+7. Probe output using FFmpeg/ffprobe.
+8. Validate duration, streams and dimensions.
+9. Check for frozen, black or missing-asset scenes.
+10. Store output with checksum and immutable revision.
+11. Move episode to `VIDEO_READY`.
+
+### Audio implementation requirement
+
+Use Remotion's supported audio components, including `@remotion/media`, to align narration with the frame-based timeline.
+
+Avoid live API calls, nondeterministic animations or random timestamps inside compositions.
+
+Scene animation must derive from frame number, timeline data and deterministic parameters.
+
+### Rendering failure handling
+
+- Bounded retries for transient infrastructure failures.
+- No blind retries for malformed manifests or missing assets.
+- Retry attempts must reuse the original immutable input revision.
+- Workers must not render the same idempotency key concurrently.
+- Partial files must not be exposed as completed exports.
+- Cancellation must terminate the worker and clean temporary resources.
+
+---
+
+## FR-08 — Human Review Studio
+
+### New application navigation
+
+Add a production workspace while preserving the existing episode/player experience.
+
+**Recommended navigation**
+
+`News Radar | Feed Manager | Episodes | Review Queue | Broadcast Studio | YouTube | Settings`
+
+### Review screen layout
+
+**Left:** Pixel Marcus video preview with playback controls.
+
+**Right:** Script, source evidence, title, description, thumbnail and publishing settings.
+
+**Bottom:** Timestamped scene timeline, captions, generation diagnostics and approval history.
+
+### Required actions
+
+- Preview final rendered MP4.
+- Inspect original sources and fact-check results.
+- Edit script and regenerate affected scenes.
+- Replace unsuitable visuals.
+- Correct subtitles.
+- Edit YouTube metadata.
+- Approve the exact video revision.
+- Reject with a reason.
+- Request changes.
+- Select target YouTube channel.
+- Select immediate or scheduled publication.
+- Download MP4 and supplementary files.
+
+### Review invariants
+
+An approved episode cannot be edited in place.
+
+Changes create a new revision and return it to an unapproved state.
+
+Review decisions must record reviewer UID, timestamp, media checksum, script revision, metadata revision, channel and publishing parameters.
+
+---
+
+## FR-09 — YouTube Publishing
+
+### Integration
+
+Use YouTube Data API v3 with server-side OAuth 2.0.
+
+The user explicitly connects a YouTube channel and grants required permissions.
+
+OAuth refresh tokens must be encrypted at rest and never sent to the browser.
+
+Use resumable media uploads for MP4 files.
+
+### Publishing flow
+
+1. Human reviews completed video.
+2. Human selects exact metadata and visibility/schedule.
+3. Human approves the release.
+4. System creates an upload job.
+5. Video is initially uploaded as `private`.
+6. Thumbnail is uploaded.
+7. Video metadata and disclosure flags are validated.
+8. Visibility or scheduling is applied according to the approval.
+9. The YouTube video ID and response are persisted.
+10. Episode publication status is updated.
+
+If any post-upload step fails, leave the uploaded video private and notify the reviewer.
+
+### Required metadata
+
+- Video title.
+- Description including original source attribution.
+- Tags and category.
+- Thumbnail.
+- Language.
+- Audience designation.
+- Appropriate altered/synthetic-media disclosure.
+- Visibility.
+- Scheduled publication timestamp if applicable.
+
+### Critical restrictions
+
+- Never publish a draft automatically.
+- Never substitute a different video or channel after approval.
+- Never publish content with unresolved material claims.
+- Never automatically retry an uncertain upload by creating another video; first reconcile with the recorded upload/session state.
+- Never store OAuth credentials in client-accessible code.
+
+---
+
+## 5. End-to-End Architecture
+
+```text
+RSS Feeds / Manual Topic / Article URL
+                  |
+             Feed Scheduler
+                  |
+             RSS Ingestion
+                  |
+        Normalization + Dedup
+                  |
+             Story Clusters
+                  |
+        News Ranking + Selection
+                  |
+        Fact/Evidence Compiler
+                  |
+             Script Engine
+                  |
+        TTS + Music Generation
+                  |
+          Audio Timeline Builder
+                  |
+           MNN Video Director
+                  |
+           VideoManifestV1
+                  |
+           Render Job Queue
+                  |
+        Remotion + FFmpeg Worker
+                  |
+        MP4 / Captions / Thumbnail
+                  |
+            Human Review Gate
+                  |
+         Approved Revision Only
+                  |
+           YouTube Publisher
+                  |
+          Scheduled / Published
+                  |
+         Audit + Cost + Metrics
+```
+
+### Infrastructure decisions
+
+| Layer | Decision |
+|---|---|
+| Frontend | Existing React 19 + Vite |
+| API | Existing Express + TypeScript |
+| Authentication | Existing Firebase Auth |
+| Orchestration | Existing Gemini integration behind adapter |
+| Durable database | PostgreSQL |
+| SQL migration layer | Prisma or equivalent typed migration tooling |
+| Job queue | BullMQ + Redis |
+| Object storage | Existing Google Cloud Storage integration |
+| Rendering | Remotion + isolated worker |
+| Media verification | FFmpeg / ffprobe |
+| YouTube | Data API v3 + OAuth 2.0 |
+| Observability | Structured logs, job state, metrics, audit events |
+
+### Why PostgreSQL is added
+
+MNN's current IndexedDB and file-based quota state are insufficient for reliable shared queues, cross-worker deduplication, revision history and transactional publishing approvals.
+
+Keep IndexedDB as a local cache and legacy compatibility layer, but use PostgreSQL as the source of truth for all new production records.
+
+The video-rendering worker must run independently from the API process. Rendering jobs must survive API restarts and browser disconnections.
+
+---
+
+## 6. Data Model and Database Schema
+
+All IDs are UUIDs unless otherwise stated. Timestamps use timezone-aware UTC values. Media records reference object storage rather than placing full binary files inside SQL.
+
+### 6.1 Required entities
+
+| Table | Essential fields |
+|---|---|
+| `rss_feeds` | id, owner_uid, url, title, category, enabled, poll_interval_minutes, etag, last_modified, next_poll_at, last_error |
+| `rss_items` | id, feed_id, guid, canonical_url, title, author, published_at, fetched_at, content_hash, body_text |
+| `story_clusters` | id, owner_uid, lead_item_id, title, summary, score, status, first_seen_at, last_seen_at |
+| `story_cluster_items` | cluster_id, item_id |
+| `claims` | id, cluster_id, claim_text, verdict, evidence_json, impact, reviewed_by |
+| `episodes` | id, owner_uid, cluster_id, input_mode, status, current_revision, language, format, created_at, updated_at |
+| `episode_revisions` | id, episode_id, revision, script_json, audio_manifest_json, video_manifest_json, youtube_metadata_json, manifest_checksum, created_at |
+| `media_assets` | id, episode_id, revision, kind, storage_uri, mime_type, duration_ms, sha256, rights_json, created_at |
+| `render_jobs` | id, episode_id, revision, status, progress, attempts, idempotency_key, error_code, output_asset_id |
+| `review_decisions` | id, episode_id, revision, reviewer_uid, decision, approved_checksum, metadata_checksum, publication_json, created_at |
+| `youtube_channels` | id, owner_uid, channel_id, display_name, encrypted_refresh_token, token_key_id, status |
+| `youtube_publications` | id, episode_id, revision, channel_id, video_id, upload_session_ref, status, scheduled_at, published_at, idempotency_key |
+| `audit_events` | id, actor_uid, entity_type, entity_id, event_type, details_json, created_at |
+
+### 6.2 Database constraints
+
+- Unique normalized feed URL per owner.
+- Unique item identity by canonical URL or source GUID strategy.
+- Unique `(cluster_id, item_id)` association.
+- Unique `(episode_id, revision)` revision.
+- Unique render idempotency key.
+- Unique publication idempotency key.
+- Unique YouTube video ID when present.
+- Foreign keys must prevent orphaned job references.
+- Approval references a specific immutable revision.
+- All state changes are audited.
+
+### 6.3 Database migrations
+
+Create new versioned migrations for the new tables and indexes. Do not alter existing browser-saved show keys or delete existing GCS objects.
+
+A migration must be repeatable in development and safely applied once in production.
+
+### 6.4 Index requirements
+
+At minimum:
+
+- `rss_feeds(enabled, next_poll_at)`
+- `rss_items(feed_id, published_at DESC)`
+- `rss_items(content_hash)`
+- `story_clusters(owner_uid, status, score DESC)`
+- `episodes(owner_uid, status, created_at DESC)`
+- `render_jobs(status, created_at)`
+- `youtube_publications(episode_id, revision)`
+- `audit_events(entity_type, entity_id, created_at DESC)`
+
+### 6.5 Media asset paths
+
+Use structured storage paths such as:
+
+```text
+mnn/episodes/{episodeId}/r{revision}/
+  research/evidence.json
+  script/script.json
+  speech/turn-001.wav
+  speech/turn-002.wav
+  audio/master.wav
+  audio/master.mp3
+  scenes/scene-001.png
+  manifests/video.json
+  render/episode.mp4
+  captions/episode.srt
+  artwork/thumbnail.png
+  metadata/youtube.json
+  reports/quality.json
+```
+
+An existing episode's approved output must remain immutable.
+
+---
+
+## 7. API Contracts
+
+All new protected endpoints require Firebase Bearer authentication.
+
+Authorization must be checked against object ownership and role, not merely token presence.
+
+### 7.1 Feed APIs
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/rss/feeds` | List feeds |
+| POST | `/api/rss/feeds` | Add and validate feed |
+| PATCH | `/api/rss/feeds/:id` | Update feed |
+| DELETE | `/api/rss/feeds/:id` | Disable/delete feed |
+| POST | `/api/rss/feeds/:id/poll` | Manual poll |
+| GET | `/api/rss/items` | List newly ingested items |
+
+**Example create feed**
+
+```json
+{
+  "url": "https://example.com/feed.xml",
+  "title": "Example AI News",
+  "category": "AI",
+  "language": "en",
+  "priority": 8,
+  "pollIntervalMinutes": 30,
+  "enabled": true
+}
+```
+
+Successful creation returns HTTP 201 with the server-generated feed ID and validated configuration.
+
+Validation errors return HTTP 400 or 422. Duplicates return HTTP 409.
+
+### 7.2 Story APIs
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/stories` | Ranked story queue |
+| GET | `/api/stories/:id` | Sources and evidence |
+| POST | `/api/stories/:id/verify` | Queue verification |
+| POST | `/api/stories/:id/produce` | Create draft episode |
+| PATCH | `/api/stories/:id` | Reviewer overrides |
+
+### 7.3 Episode APIs
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/episodes/from-text` | Create manual-input episode |
+| GET | `/api/episodes/:id` | Episode and state |
+| GET | `/api/episodes/:id/revisions/:revision` | Immutable revision |
+| PATCH | `/api/episodes/:id/script` | Save script edit as new revision |
+| POST | `/api/episodes/:id/render` | Queue render |
+| GET | `/api/episodes/:id/assets` | Authorized media list |
+| POST | `/api/episodes/:id/submit-review` | Submit final video |
+| POST | `/api/episodes/:id/approve` | Approve revision |
+| POST | `/api/episodes/:id/reject` | Reject revision |
+| GET | `/api/jobs/:jobId` | Read job progress |
+| GET | `/api/jobs/:jobId/events` | Stream job updates |
+
+### 7.4 Render request
+
+```json
+{
+  "revision": 3,
+  "compositionId": "MNNBroadcast16x9",
+  "outputPreset": "youtube_1080p",
+  "idempotencyKey": "episode-id-r3-youtube"
+}
+```
+
+Response: HTTP 202 Accepted.
+
+```json
+{
+  "jobId": "job-uuid",
+  "episodeId": "episode-uuid",
+  "revision": 3,
+  "status": "QUEUED",
+  "progress": 0
+}
+```
+
+### 7.5 Approval request
+
+```json
+{
+  "revision": 3,
+  "videoChecksum": "sha256-value",
+  "metadataChecksum": "sha256-value",
+  "decision": "APPROVE",
+  "publication": {
+    "channelId": "connected-channel-id",
+    "mode": "SCHEDULED",
+    "scheduledAt": "2026-10-29T02:00:00Z"
+  }
+}
+```
+
+Reject if the requested revision is no longer current, checksums differ, evidence is unresolved, or the reviewer lacks permission.
+
+### 7.6 YouTube APIs
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/youtube/connect` | Start OAuth |
+| GET | `/api/youtube/callback` | Finish OAuth |
+| GET | `/api/youtube/channels` | Connected channels |
+| DELETE | `/api/youtube/channels/:id` | Disconnect |
+| POST | `/api/episodes/:id/publish` | Execute recorded approval |
+| GET | `/api/episodes/:id/publication` | Upload/publish status |
+
+Publication API responses must return actual YouTube IDs, persisted states and error reasons.
+
+### 7.7 API error format
+
+```json
+{
+  "error": {
+    "code": "APPROVAL_REVISION_MISMATCH",
+    "message": "The video changed after approval.",
+    "retryable": false,
+    "requestId": "request-uuid"
+  }
+}
+```
+
+Use HTTP 401 for missing authentication, 403 for denied access, 404 for missing resources, 409 for state conflicts, 422 for invalid requests, 429 for quota violations and 5xx for server failures.
+
+---
+
+## 8. Episode State Machine
+
+### 8.1 Primary lifecycle
+
+```text
+DISCOVERED
+    |
+SELECTED
+    |
+VERIFYING
+    |
+VERIFIED
+    |
+SCRIPTING
+    |
+SCRIPT_READY
+    |
+GENERATING_AUDIO
+    |
+AUDIO_READY
+    |
+DIRECTING
+    |
+RENDER_QUEUED
+    |
+RENDERING
+    |
+VIDEO_READY
+    |
+AWAITING_APPROVAL
+    |
+APPROVED
+    |
+UPLOADING
+    |
+UPLOADED_PRIVATE
+    |
+  +-----------------+
+  |                 |
+SCHEDULED        PUBLISHED
+  |
+PUBLISHED
+```
+
+### 8.2 Exception states
+
+- `NEEDS_FACT_REVIEW`
+- `CHANGES_REQUESTED`
+- `RENDER_FAILED`
+- `UPLOAD_FAILED`
+- `PUBLISH_FAILED`
+- `CANCELLED`
+- `ARCHIVED`
+
+Every exception state must have defined recovery transitions.
+
+`CHANGES_REQUESTED` creates a new editable revision. The previous approved or rendered revision remains available for audit.
+
+### 8.3 Transition guards
+
+- `VERIFIED` requires a completed evidence packet.
+- `SCRIPT_READY` requires valid speaker-turn JSON.
+- `AUDIO_READY` requires playable audio and measured durations.
+- `RENDER_QUEUED` requires a valid video manifest.
+- `VIDEO_READY` requires a verified MP4 file.
+- `AWAITING_APPROVAL` requires completed media and fact review checks.
+- `APPROVED` requires authenticated human approval.
+- `UPLOADING` requires an approval matching the current revision.
+- `PUBLISHED` requires YouTube confirmation.
+- Publishing a different revision requires fresh approval.
+
+---
+
+## 9. Background Jobs and Reliability
+
+### Queue definitions
+
+- `rss.poll`
+- `rss.normalize`
+- `news.cluster`
+- `news.verify`
+- `episode.script`
+- `episode.tts`
+- `episode.audio_mix`
+- `episode.direct`
+- `video.render`
+- `video.quality_check`
+- `youtube.upload`
+- `youtube.publish`
+- `media.cleanup`
+
+### Job policies
+
+- Every job must have a durable ID and status.
+- Jobs should support resumable workflows where feasible.
+- Idempotency must prevent repeated article insertion, duplicate renders and duplicate YouTube uploads.
+- Use exponential backoff with bounded retries and jitter.
+- Validation failures require correction, not automatic retries.
+- Record stage duration, model cost, asset sizes and errors.
+- Reserve maximum worker concurrency and memory.
+- Generation and publishing budgets must have configurable ceilings.
+- Cancellation must propagate through dependent jobs.
+- API restart must not erase queued work.
+
+The existing `DAILY_QUOTA_LIMIT` behavior stays supported while server-side quota accounting moves to durable storage for production.
+
+---
+
+## 10. Security, Licensing and Content Governance
+
+### Security requirements
+
+**SEC-001:** Authenticate and authorize all production-write endpoints.
+
+**SEC-002:** Do not permit a failed authentication token to silently become a privileged shared user.
+
+**SEC-003:** Harden `/api/download-proxy` against SSRF. Restrict allowed destinations, validate DNS/IP ranges and redirects, limit payload size, and block cloud metadata and internal services.
+
+**SEC-004:** Apply equivalent network restrictions to RSS and article ingestion.
+
+**SEC-005:** Treat RSS articles, page HTML and retrieved text as untrusted data, not executable agent instructions.
+
+**SEC-006:** Protect OAuth tokens, API keys and storage credentials with server-side secret management.
+
+**SEC-007:** Enforce ownership checks when retrieving videos, metadata and media objects.
+
+**SEC-008:** Use safe file paths; reject traversal and malicious archive entries.
+
+**SEC-009:** Isolate rendering workers from privileged cloud credentials whenever possible.
+
+**SEC-010:** Log security-sensitive actions without exposing tokens, personal information or full secrets.
+
+### Licensing requirements
+
+- Review Remotion license eligibility for the actual organization and automated-video use case.
+- Review media rights before selecting or generating footage.
+- Use licensed, self-created or appropriately permitted audio and visual assets.
+- Do not assume an open-source GitHub license covers separately distributed model weights, music, datasets or stock footage.
+- Preserve publisher attributions where required.
+- Document commercially restricted dependencies.
+
+### Content requirements
+
+- The program must identify itself as MNN.
+- Synthetic speakers must not impersonate a real person without appropriate authorization.
+- Clearly distinguish satirical fiction from factual news.
+- Configure YouTube audience and synthetic-media disclosures correctly.
+- Do not display artificial viewer counts as real statistics.
+- The human approval screen must show unresolved editorial, copyright and factual risks.
+
+---
+
+## 11. User Interface Specification
+
+### Screen A — News Radar
+
+Display ranked story cards with headline, publisher, publication time, topic, number of independent sources, score, fact-check state and production status.
+
+Actions: Select, Inspect, Skip, Produce.
+
+### Screen B — RSS Feed Manager
+
+Table of configured feeds with validation, polling controls, categories, weights, language and health status.
+
+Actions: Add, Edit, Disable, Delete, Poll Now.
+
+### Screen C — Episode Workspace
+
+Display research, outline, script, voice settings, scene timeline and generation progress.
+
+Actions: Edit, Regenerate Section, Generate Audio, Render.
+
+### Screen D — Broadcast Studio
+
+Maintain the current MNN player. Add a Remotion-backed preview mode with consistent 16:9 composition and scene rendering.
+
+Modes: Audio, Video Preview, Final MP4, Transcript.
+
+### Screen E — Review Queue
+
+Prioritize episodes awaiting human action. Show complete evidence packet, final video, disclosures, rights status and YouTube metadata.
+
+Actions: Request Changes, Reject, Approve & Publish, Approve & Schedule.
+
+### Screen F — YouTube Dashboard
+
+Show connected channel, pending uploads, scheduled videos, publication status, YouTube links and failed jobs.
+
+### Screen G — Operations
+
+Show queued/running/failed jobs, API usage, generation costs, storage, worker health and approval history.
+
+---
+
+## 12. Implementation File Plan
+
+### Existing files to modify carefully
+
+```text
+src/App.tsx
+src/types.ts
+src/data.ts
+src/lib/clientDb.ts
+server.ts
+server/lib/agentClient.ts
+agent/AGENTS.md
+agent/skills/script-writing/
+agent/skills/tts-generation/
+agent/skills/metadata-generation/
+package.json
+.env.example
+```
+
+### New proposed directories
+
+```text
+src/
+  features/
+    rss/
+    radar/
+    episodes/
+    review/
+    youtube/
+  components/
+    broadcast/
+      BroadcastStage.tsx
+      PixelMarcus.tsx
+      NewsTicker.tsx
+      NewsLowerThird.tsx
+      TranscriptCaptions.tsx
+
+server/
+  routes/
+    rss.ts
+    stories.ts
+    episodes.ts
+    jobs.ts
+    youtube.ts
+  services/
+    rss/
+    dedup/
+    evidence/
+    director/
+    media/
+    publishing/
+  workers/
+    ingest.worker.ts
+    episode.worker.ts
+    render.worker.ts
+    publish.worker.ts
+  db/
+    prisma/
+    migrations/
+  lib/
+    auth.ts
+    audit.ts
+    queues.ts
+    objectStorage.ts
+    idempotency.ts
+
+video/
+  index.ts
+  Root.tsx
+  compositions/
+    MNNBroadcast16x9.tsx
+    MNNShorts9x16.tsx
+    MNNThumbnail.tsx
+  components/
+    AnchorScene.tsx
+    NewsCard.tsx
+    CorrespondentScene.tsx
+    Captions.tsx
+    BroadcastTicker.tsx
+  contracts/
+    VideoManifestV1.ts
+  utils/
+    timeline.ts
+    assetResolver.ts
+
+tests/
+  unit/
+  integration/
+  rendering/
+  e2e/
+  fixtures/
+```
+
+### Architectural requirement
+
+Avoid further expanding the existing large `src/App.tsx` and `server.ts` files.
+
+Extract modules behind stable interfaces and preserve existing behavior.
+
+---
+
+## 13. Environment Configuration
+
+Add configuration entries to `.env.example`, documenting all production requirements without committing secrets.
+
+```dotenv
+MNN_VIDEO_ENABLED=false
+MNN_RSS_ENABLED=false
+MNN_YOUTUBE_ENABLED=false
+MNN_AUTO_PUBLISH=false
+MNN_REVIEW_REQUIRED=true
+
+DATABASE_URL=
+REDIS_URL=
+GCS_BUCKET_NAME=
+
+RSS_DEFAULT_INTERVAL_MINUTES=30
+RSS_MAX_BYTES=2097152
+RSS_TIMEOUT_MS=10000
+
+RENDER_MAX_CONCURRENCY=1
+RENDER_MAX_DURATION_SECONDS=900
+RENDER_MAX_ATTEMPTS=2
+RENDER_OUTPUT_PRESET=youtube_1080p
+
+YOUTUBE_CLIENT_ID=
+YOUTUBE_CLIENT_SECRET=
+YOUTUBE_REDIRECT_URI=
+YOUTUBE_TOKEN_ENCRYPTION_KEY_REF=
+
+DAILY_QUOTA_LIMIT=3
+GEMINI_API_KEY=
+```
+
+The application must fail closed if production database, queue, authentication or encryption configuration is missing.
+
+`MNN_AUTO_PUBLISH=false` is a hard requirement for supervised mode.
+
+---
+
+## 14. Acceptance Tests
+
+### 14.1 RSS and clustering
+
+| Test ID | Scenario | Pass condition |
+|---|---|---|
+| RSS-01 | Add valid feed | Stored and visible |
+| RSS-02 | Fetch new items | Unique records created |
+| RSS-03 | Repeat same poll | No duplicates |
+| RSS-04 | Same story from two sources | Correct cluster with both sources |
+| RSS-05 | Invalid XML | Controlled failure |
+| RSS-06 | Private-network feed URL | Request blocked |
+| RSS-07 | Source returns 304 | No unnecessary records |
+| RSS-08 | Feed disabled | No scheduled fetching |
+
+### 14.2 Editorial and audio
+
+| Test ID | Scenario | Pass condition |
+|---|---|---|
+| EDIT-01 | Supported claim | Evidence linked |
+| EDIT-02 | Unsupported material claim | Cannot pass approval |
+| EDIT-03 | Contradictory evidence | Escalated for review |
+| EDIT-04 | Satirical dialogue | Clearly marked as fiction |
+| AUD-01 | Multi-speaker output | Correct voices in order |
+| AUD-02 | Timestamp manifest | Matches measured audio |
+| AUD-03 | Missing TTS segment | No false success |
+| AUD-04 | Script revision | Affected assets invalidated |
+
+### 14.3 Rendering
+
+| Test ID | Scenario | Pass condition |
+|---|---|---|
+| VID-01 | Render 3-minute script | Valid playable MP4 |
+| VID-02 | Inspect video streams | 1920×1080, 30 FPS, H.264 |
+| VID-03 | Inspect audio | AAC, audible and synchronized |
+| VID-04 | Validate captions | Correct speaker and timestamp |
+| VID-05 | Scene transitions | No unintended missing intervals |
+| VID-06 | Missing asset | Controlled failure and diagnostics |
+| VID-07 | Repeat identical render request | No duplicate job |
+| VID-08 | Cancel rendering | Worker stops and releases resources |
+| VID-09 | Render with fixed manifest | Reproducible visual timeline |
+| VID-10 | Download | Correct MP4 and SRT files |
+
+### 14.4 Approval and YouTube
+
+| Test ID | Scenario | Pass condition |
+|---|---|---|
+| REV-01 | Unapproved episode | Cannot publish |
+| REV-02 | Wrong reviewer | Access denied |
+| REV-03 | Approval after script modification | Approval invalidated |
+| REV-04 | Metadata edited after approval | Re-approval required |
+| YT-01 | Connect channel | Secure OAuth completed |
+| YT-02 | Upload approved video | Correct YouTube video ID stored |
+| YT-03 | Upload interrupted | Resumes or reconciles safely |
+| YT-04 | Schedule private video | Correct future publish time |
+| YT-05 | Invalid OAuth credentials | No publication |
+| YT-06 | Upload request retried | No duplicate public video |
+| YT-07 | Thumbnail upload fails | Episode remains private, error surfaced |
+
+### 14.5 Regression
+
+| Test ID | Scenario | Pass condition |
+|---|---|---|
+| REG-01 | Legacy topic generation | Existing `/api/generate-show` works |
+| REG-02 | Existing podcast player | Plays audio |
+| REG-03 | Saved show history | Remains accessible |
+| REG-04 | Existing share URL | Resolves |
+| REG-05 | Firebase login/logout | Works |
+| REG-06 | Video feature disabled | Old UX remains usable |
+| REG-07 | Existing download ZIP | Unchanged output supported |
+| REG-08 | API server starts | Health endpoint returns OK |
+
+### 14.6 End-to-end golden path
+
+**Input:** One valid technology RSS story.
+
+Expected sequence:
+
+1. Story is ingested and deduplicated.
+2. Research evidence is stored.
+3. Pixel Marcus script is generated.
+4. Speech and music are produced.
+5. Exact timing manifest is built.
+6. Video Director creates timed scenes.
+7. Remotion generates playable 1080p MP4.
+8. Quality checks pass.
+9. Human reviews the finished video.
+10. Human approves publication.
+11. YouTube receives the approved MP4 privately.
+12. The approved visibility or schedule is applied.
+13. Publication link and audit record are saved.
+
+The golden path passes only when the video is externally playable on YouTube under the approved visibility state and the local episode records match the published artifact.
+
+---
+
+## 15. Phased Implementation Plan
+
+### Phase 0 — Foundation and safety
+
+**Scope:** Baseline testing, module extraction, auth/SSRF hardening, environment validation, database and queue setup.
+
+**Deliverables:** Stable legacy baseline, feature flags, migrations, worker framework.
+
+**Exit criteria:** Existing core flows pass; new features disabled by default.
+
+### Phase 1 — RSS News Radar
+
+**Scope:** Feed manager, parser, scheduler, canonical URL processing, deduplication and ranking.
+
+**Deliverables:** Working news dashboard and durable story clusters.
+
+**Exit criteria:** Multiple feeds can be polled repeatedly without duplicated stories.
+
+### Phase 2 — Editorial Intelligence
+
+**Scope:** Evidence collection, claim verification, structured scripts, manual editing, real speech timing.
+
+**Deliverables:** Evidence-backed editable episode with accurate audio manifest.
+
+**Exit criteria:** Unsupported material claims are flagged and captions align to actual narration timing.
+
+### Phase 3 — Video Director and Renderer
+
+**Scope:** Deterministic scene manifest, reusable studio components, Remotion composition, MP4 rendering, quality validation.
+
+**Deliverables:** First real three-minute Pixel Marcus video.
+
+**Exit criteria:** `VID-01` through `VID-10` pass.
+
+### Phase 4 — Review and YouTube
+
+**Scope:** Review UI, revision approvals, OAuth, private upload, scheduling, audit trail.
+
+**Deliverables:** Supervised publishing.
+
+**Exit criteria:** All review and YouTube acceptance tests pass, including denial of unapproved publication.
+
+### Phase 5 — Production hardening
+
+**Scope:** Monitoring, retries, cost controls, failure recovery, license verification, media rights, operational dashboards.
+
+**Deliverables:** Production-ready daily video workflow.
+
+**Exit criteria:** Five consecutive end-to-end episode productions complete with no critical failures; at least one uses the actual approved YouTube publishing path.
+
+---
+
+## 16. Initial Operating Targets
+
+These are acceptance targets, not claims about current MNN performance.
+
+| Metric | Target |
+|---|---|
+| RSS poll interval | 30 minutes by default |
+| Duplicate ingestion rate | 0 exact duplicates |
+| Target episode duration | 3–5 minutes |
+| MP4 profile | 1080p / 30 FPS |
+| Narration synchronization | ≤150 ms timing deviation at speaker boundaries |
+| Render completion | ≥95% for valid supported manifests in controlled testing |
+| Approval coverage | 100% of public/scheduled releases |
+| Unauthorized publication incidents | 0 |
+| Duplicate YouTube publications | 0 |
+| Completed golden-path episodes | At least 5 before production release |
+
+Generation cost must be measured by stage instead of assuming a fixed cost per minute.
+
+Track LLM tokens, TTS usage, music generation, image generation, rendering compute, storage and YouTube API requests separately.
+
+---
+
+## 17. Development Workflow and Release Discipline
+
+### Branch strategy
+
+Create an isolated branch such as:
+
+`feature/mnn-rss-video-patch-001`
+
+Do not patch production `main` directly.
+
+### Required pre-merge commands
+
+```bash
+npm ci
+npm run lint
+npm run build
+```
+
+Add automated commands:
+
+```bash
+npm run test
+npm run test:integration
+npm run test:render
+npm run test:e2e
+```
+
+The newly added commands must actually execute test suites rather than return placeholder success.
+
+### Release sequencing
+
+1. Implement behind feature flags.
+2. Test legacy flows before adding production traffic.
+3. Deploy RSS and editorial modules first.
+4. Enable rendering for development accounts only.
+5. Verify MP4 output with fixture audio and a real generated show.
+6. Enable supervised YouTube publishing after OAuth and safety testing.
+7. Roll out to production.
+8. Keep independent kill switches for ingestion, generation, rendering and publishing.
+
+Rollback must disable the new modules without requiring deletion of approved records or stored media.
+
+---
+
+## 18. Definition of Done
+
+Patch 001 is considered complete only when:
+
+- The existing MNN podcast application still works.
+- RSS feeds automatically provide story candidates.
+- Duplicate stories are clustered correctly.
+- Each selected news item has an inspectable evidence record.
+- Pixel Marcus receives an editable script and synthesized voice.
+- Actual video scenes change over time.
+- Narration and subtitles remain synchronized.
+- The renderer exports a real playable MP4.
+- A complete human approval record exists for every published episode.
+- YouTube publishing and scheduling work reliably.
+- Failures do not silently result in public content.
+- The golden-path and regression tests pass.
+- The system has a basic operations dashboard and cost tracking.
+- Operational documentation and environment setup instructions are complete.
+
+**Final release goal:** MNN can discover a story from RSS, automatically produce a verified, original Pixel Marcus television-style YouTube video, and publish it only after the authorized human approves the final video and its publication settings.
+
+---
+
+## 19. Future Patches (Out of Scope)
+
+**Patch 002 — MNN Autonomous Shorts Factory:** Automatically extract and reframe long episodes into 9:16 Shorts, with human approval.
+
+**Patch 003 — Multi-Show Network:** Distinct recurring MNN personalities, program slots, channel topics and multilingual production.
+
+**Patch 004 — MNN Live TV:** 24/7 scheduled broadcast playout, OBS/FFmpeg streaming, fallback media, uptime monitoring and real YouTube Live status.
+
+**Patch 005 — Audience Intelligence:** Use actual YouTube analytics, retention, click-through and audience feedback to improve future editorial and production decisions, without distorting factual reporting.
+
+---
+
+## 20. Implementation Order for Coding Agents
+
+The coding agent should execute work in this exact dependency order:
+
+1. Establish clean build/test baseline and save results.
+2. Fix high-priority security and authentication gaps.
+3. Add PostgreSQL migrations and durable queue infrastructure.
+4. Add RSS ingestion, URL normalization and deduplication.
+5. Implement story/evidence records and structured scripts.
+6. Export deterministic speaker-level audio timing.
+7. Create `VideoManifestV1` types and validators.
+8. Extract reusable MNN broadcast visual components.
+9. Implement the 16:9 Remotion composition.
+10. Implement isolated render worker and MP4 validation.
+11. Build review UI and immutable revision approval.
+12. Add YouTube OAuth and private-first publishing.
+13. Add scheduling, reconciliation and audit logs.
+14. Execute regression, security and golden-path tests.
+15. Prepare the supervised production rollout.
+
+**Do not begin 24/7 livestream development until the RSS-to-MP4-to-approved-YouTube workflow is proven.**
+
+**Do not claim that a successful web preview or MP3 export is a successful video render.**
+
+**Do not replace the existing MNN codebase with a new starter application.** This is an incremental patch to the existing repository.
